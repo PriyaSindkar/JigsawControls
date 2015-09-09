@@ -1,0 +1,53 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+
+    <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
+
+    </style>
+
+    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/primaryColor</item>
+    </style>
+
+    <style name="TextInputLayout" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/L_TEXT_SIZE</item>
+        <item name="android:textColor">@color/primaryColor</item>
+    </style>
+
+    <style name="my_buttons">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/standard_button</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="Widget.CardContent" parent="android:Widget">
+        <item name="android:paddingLeft">@dimen/STD_MARGIN</item>
+        <item name="android:paddingRight">@dimen/STD_MARGIN</item>
+        <item name="android:paddingTop">@dimen/M_TEXT_SIZE</item>
+        <item name="android:paddingBottom">@dimen/M_TEXT_SIZE</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="CardViewStyle" parent="CardView">
+        <item name="android:paddingLeft">@dimen/STD_MARGIN</item>
+        <item name="android:paddingRight">@dimen/STD_MARGIN</item>
+        <item name="android:paddingTop">@dimen/M_TEXT_SIZE</item>
+        <item name="android:paddingBottom">@dimen/M_TEXT_SIZE</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="cardCornerRadius">8dp</item>
+        <item name="cardBackgroundColor">@color/primaryColor</item>
+    </style>
+</resources>
