@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:background="@color/primaryColor"
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/HEADER_SIZE"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/imgBack"
+            android:drawablePadding="@dimen/STD_PADDING"
+            android:textColor="@color/white"
+            android:drawableLeft="@drawable/ic_navigation_arrow_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/STD_MARGIN"
+            android:textSize="@dimen/L_TEXT_SIZE"
+            android:text="New Record"/>
+    </LinearLayout>
+
+</RelativeLayout>

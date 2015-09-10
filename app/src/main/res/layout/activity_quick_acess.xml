@@ -17,7 +17,7 @@
         android:layout_centerInParent="true"
         android:layout_marginTop="@dimen/HEADER_SIZE"
         android:orientation="vertical"
-        android:layout_margin="@dimen/M_TEXT_SIZE"
+        android:layout_margin="@dimen/L_TEXT_SIZE"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/HEADER_SIZE"
             app:textColor="@color/secondaryColor"
-            app:textSize="@dimen/M_TEXT_SIZE"
+            app:textSize="@dimen/L_TEXT_SIZE"
             app:lineColor="@color/primaryColor"
             app:lineWidth="1dp"
             app:gridColor="#ffffff"

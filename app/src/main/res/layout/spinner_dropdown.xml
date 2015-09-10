@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="@dimen/STD_MARGIN"
+    android:id="@+id/spID"
+    android:text="ccsdv"
+    android:gravity="center"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:lines="1"
+    android:padding="@dimen/STD_PADDING"/>

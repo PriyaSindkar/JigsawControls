@@ -31,6 +31,19 @@
             android:name=".uiActivities.LoginActivity"
             android:label="@string/login" >
         </activity>
+
+        <activity
+            android:name=".uiActivities.NewRecordActivity">
+        </activity>
+
+        <activity
+            android:name=".uiActivities.OldRecordActivity">
+        </activity>
+
+        <activity
+            android:name=".uiActivities.HistoryActivity">
+        </activity>
+
     </application>
 
 </manifest>

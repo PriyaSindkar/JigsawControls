@@ -14,7 +14,6 @@
 
     <LinearLayout
         android:layout_below="@id/logo"
-        android:layout_marginTop="@dimen/HEADER_SIZE"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -28,7 +27,7 @@
         android:layout_marginRight="@dimen/STD_MARGIN">
 
         <LinearLayout
-            android:id="@+id/linearParent"
+            android:id="@+id/linearNewRecord"
             style="@style/Widget.CardContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -56,6 +55,7 @@
         android:layout_marginRight="@dimen/STD_MARGIN">
 
         <LinearLayout
+            android:id="@+id/linearOldRecord"
             style="@style/Widget.CardContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,33 +76,34 @@
 
     </android.support.v7.widget.CardView>
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/STD_MARGIN"
-        android:layout_marginLeft="@dimen/STD_MARGIN"
-        android:layout_marginRight="@dimen/STD_MARGIN">
-
-        <LinearLayout
+           <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            style="@style/Widget.CardContent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/STD_MARGIN"
+            android:layout_marginLeft="@dimen/STD_MARGIN"
+            android:layout_marginRight="@dimen/STD_MARGIN">
 
-            <TextView
-                android:gravity="center"
-                android:id="@+id/txtOrderHistory"
+            <LinearLayout
+                android:id="@+id/linearHistory"
                 android:layout_width="match_parent"
+                style="@style/Widget.CardContent"
                 android:layout_height="wrap_content"
-                android:text="Completed Records"
-                android:padding="@dimen/STD_MARGIN"
-                android:textSize="@dimen/L_TEXT_SIZE"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:textColor="@color/primaryColor" />
-        </LinearLayout>
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:gravity="center"
+                    android:id="@+id/txtOrderHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Completed Records"
+                    android:padding="@dimen/STD_MARGIN"
+                    android:textSize="@dimen/L_TEXT_SIZE"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textColor="@color/primaryColor" />
+            </LinearLayout>
 
 
-    </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
 
@@ -110,7 +111,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="@dimen/STD_MARGIN"
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="LogOut"

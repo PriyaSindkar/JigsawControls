@@ -9,4 +9,15 @@
     <string name="login">Login</string>
     <string name="quick_access">Quick Access</string>
 
+    <string-array name="trolley_categories">
+
+        <item name="Category1">Category 1</item>
+        <item name="Category2">Category 2</item>
+        <item name="Category3">Category 3</item>
+        <item name="Category4">Category 4</item>
+        <item name="Category5">Category 5</item>
+        <item name="Category6">Category 6</item>
+
+    </string-array>
+
 </resources>
