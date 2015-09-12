@@ -92,7 +92,9 @@ public class MyDrawerActivity extends ActionBarActivity implements NavigationVie
                 fragmentTransaction.replace(R.id.frame, homeFragment);
                 fragmentTransaction.commit();
                     return true;
-            case R.id.settings:
+            case R.id.change_OTP:
+                return true;
+            case R.id.change_login_password:
                 return true;
             default:
                 return true;

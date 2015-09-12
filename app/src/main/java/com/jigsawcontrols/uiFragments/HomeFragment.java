@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.jigsawcontrols.R;
@@ -15,11 +16,11 @@ import com.jigsawcontrols.uiActivities.HistoryActivity;
 import com.jigsawcontrols.uiActivities.LoginActivity;
 import com.jigsawcontrols.uiActivities.NewRecordActivity;
 import com.jigsawcontrols.uiActivities.OldRecordActivity;
+import com.jigsawcontrols.uiActivities.QuickAccessActivity;
 
 public class HomeFragment extends Fragment {
 
-    Button btnLogout;
-    LinearLayout linearNewRecord, linearOldRecord, linearHistory;
+    LinearLayout linearNewRecord, linearOldRecord, linearHistory, btnLogout;
 
     public static HomeFragment newInstance() {
         HomeFragment f = new HomeFragment();
@@ -42,7 +43,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.framgment_home, container, false);
-        btnLogout = (Button) view.findViewById(R.id.btnLogout);
+        btnLogout = (LinearLayout) view.findViewById(R.id.btnLogout);
         linearNewRecord = (LinearLayout) view.findViewById(R.id.linearNewRecord);
         linearOldRecord = (LinearLayout) view.findViewById(R.id.linearOldRecord);
         linearHistory = (LinearLayout) view.findViewById(R.id.linearHistory);
@@ -56,7 +57,7 @@ public class HomeFragment extends Fragment {
                 editor.clear();
                 editor.commit();
 
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                Intent intent = new Intent(getActivity(), QuickAccessActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }

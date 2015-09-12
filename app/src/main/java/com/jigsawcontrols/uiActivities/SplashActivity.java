@@ -27,17 +27,9 @@ public class SplashActivity extends ActionBarActivity {
 
             @Override
             public void onFinish() {
-
-                SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
-
-                if(preferences.contains("isUserLogin")) {
-                    Intent intent = new Intent(getBaseContext(), MyDrawerActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Intent intent = new Intent(getBaseContext(), QuickAccessActivity.class);
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(getBaseContext(), QuickAccessActivity.class);
+                startActivity(intent);
+                finish();
             }
             @Override
             public void onTick(long millisUntilFinished) {

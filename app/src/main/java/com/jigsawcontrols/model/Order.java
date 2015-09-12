@@ -1,14 +1,21 @@
 package com.jigsawcontrols.model;
 
+import java.util.ArrayList;
+
 /**
  * Created by Priya on 9/11/2015.
  */
 public class Order {
 
-    private String componentName1, componentName2,orderDate, category, catSerialNumber;
+    private String orderDate, category, catSerialNumber;
+    private ArrayList<Component> components;
 
-    public String getComponentName1() {
-        return componentName1;
+    public ArrayList<Component> getComponents() {
+        return components;
+    }
+
+    public void setComponents(ArrayList<Component> components) {
+        this.components = components;
     }
 
     public String getCategory() {
@@ -25,18 +32,6 @@ public class Order {
 
     public void setCatSerialNumber(String catSerialNumber) {
         this.catSerialNumber = catSerialNumber;
-    }
-
-    public void setComponentName1(String componentName1) {
-        this.componentName1 = componentName1;
-    }
-
-    public String getComponentName2() {
-        return componentName2;
-    }
-
-    public void setComponentName2(String componentName2) {
-        this.componentName2 = componentName2;
     }
 
     public String getOrderDate() {

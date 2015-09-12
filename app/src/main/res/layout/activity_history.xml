@@ -23,7 +23,7 @@
             android:gravity="center"
             android:padding="@dimen/STD_MARGIN"
             android:textSize="@dimen/L_TEXT_SIZE"
-            android:text="History"/>
+            android:text="Completed Records"/>
     </LinearLayout>
 
     <LinearLayout

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
-    android:focusableInTouchMode="false">
+    android:focusableInTouchMode="true">
 
     <LinearLayout
         android:background="@color/primaryColor"
@@ -78,6 +78,7 @@
         android:id="@+id/linearBottom"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
+        android:gravity="center"
         android:background="@color/primaryColor"
         android:layout_width="match_parent"
         android:layout_height="@dimen/HEADER_SIZE">
@@ -94,6 +95,7 @@
             android:text="Submit Now"/>
 
         <View
+            android:id="@+id/line"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@color/white"/>
@@ -119,179 +121,10 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
+                android:id="@+id/linearComponentsParent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/STD_MARGIN"
-                android:layout_marginLeft="@dimen/STD_MARGIN"
-                android:layout_marginRight="@dimen/STD_MARGIN">
-
-                <LinearLayout
-                    style="@style/Widget.CardContent"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:id="@+id/txtComponent1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Component 1"
-                        android:textColor="@color/primaryColor" />
-
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/STD_MARGIN">
-
-                        <EditText
-                            android:id="@+id/edtComponent1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Enter Component Details"
-                            android:textColor="@color/primaryColor"
-                            android:inputType="text"
-                            android:textColorHint="#d1d1d1"/>
-                    </android.support.design.widget.TextInputLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="@dimen/STD_MARGIN"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/txtComponent2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="left"
-                            android:layout_marginBottom="@dimen/STD_MARGIN"
-                            android:textColor="@color/primaryColor"
-                            android:text="Capture Image"/>
-
-
-                        <LinearLayout
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="@dimen/LOGO_SIZE"
-                                android:layout_height="@dimen/LOGO_SIZE"
-                                android:padding="@dimen/STD_MARGIN"
-                                android:layout_margin="@dimen/STD_MARGIN"
-                                android:background="@drawable/standard_button_border"
-                                android:scaleType="fitXY"/>
-
-                            <ImageView
-                                android:layout_margin="@dimen/STD_MARGIN"
-                                android:layout_width="@dimen/LOGO_SIZE"
-                                android:layout_height="@dimen/LOGO_SIZE"
-                                android:src="@drawable/ic_add"
-                                android:padding="@dimen/STD_PADDING"
-                                android:textColor="@color/white"
-                                android:background="@drawable/standard_button_border"/>
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>`
-
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/STD_MARGIN"
-                android:layout_marginLeft="@dimen/STD_MARGIN"
-                android:layout_marginRight="@dimen/STD_MARGIN">
-
-                <LinearLayout
-                    style="@style/Widget.CardContent"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Component 2"
-                        android:textColor="@color/primaryColor" />
-
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/STD_MARGIN">
-
-                        <EditText
-                            android:id="@+id/edtComponent2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Enter Component Details"
-                            android:textColor="@color/primaryColor"
-                            android:inputType="text"
-                            android:textColorHint="#d1d1d1"/>
-                    </android.support.design.widget.TextInputLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="@dimen/STD_MARGIN"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="left"
-                            android:layout_marginBottom="@dimen/STD_MARGIN"
-                            android:textColor="@color/primaryColor"
-                            android:text="Capture Image"/>
-
-
-                        <LinearLayout
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="@dimen/LOGO_SIZE"
-                                android:layout_height="@dimen/LOGO_SIZE"
-                                android:padding="@dimen/STD_MARGIN"
-                                android:layout_margin="@dimen/STD_MARGIN"
-                                android:background="@drawable/standard_button_border"
-                                android:scaleType="fitXY"/>
-
-                            <ImageView
-                                android:layout_margin="@dimen/STD_MARGIN"
-                                android:layout_width="@dimen/LOGO_SIZE"
-                                android:layout_height="@dimen/LOGO_SIZE"
-                                android:src="@drawable/ic_add"
-                                android:padding="@dimen/STD_PADDING"
-                                android:textColor="@color/white"
-                                android:background="@drawable/standard_button_border"/>
-                        </LinearLayout>
-
-
-
-                    </LinearLayout>
-
-                </LinearLayout>`
-
-
-            </android.support.v7.widget.CardView>
-
 
             </LinearLayout>
         </ScrollView>
