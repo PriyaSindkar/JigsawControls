@@ -23,6 +23,7 @@ public class HistoryActivity extends ActionBarActivity {
     private List<String> catSerialNos;
     private ArrayAdapter<String> adapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
