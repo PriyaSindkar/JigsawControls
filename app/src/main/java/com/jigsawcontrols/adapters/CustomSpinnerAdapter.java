@@ -11,6 +11,7 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.jigsawcontrols.R;
+import com.jigsawcontrols.model.TemplateModel;
 
 import java.util.List;
 
@@ -19,18 +20,18 @@ import java.util.List;
  */
 public class CustomSpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
     LayoutInflater layoutInflator;
-    List<String> values;
+    List<TemplateModel> values;
 
 
     Context ctx;
     int mainSpinnerView,dropSpinnerView;
 
-    public CustomSpinnerAdapter(Context ctx, List<String> values){
+    public CustomSpinnerAdapter(Context ctx, List<TemplateModel> templates){
         this.ctx = ctx;
-        this.values = values;
+        this.values = templates;
     }
 
-    public CustomSpinnerAdapter(Context context, List<String> values, int mainView, int dropView) {
+    public CustomSpinnerAdapter(Context context, List<TemplateModel> values, int mainView, int dropView) {
         this.values = values;
         ctx = context;
         mainSpinnerView =mainView;
@@ -59,12 +60,11 @@ public class CustomSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
 
         view = layoutInflator.inflate(dropSpinnerView, parent, false);
 
-        TextView txt = (TextView)view.findViewById(R.id.spID);
+        TextView txt = (TextView)view.findViewById(R.id.txtSpinner);
         txt.setPadding(12,12,12,12);
         txt.setGravity(Gravity.CENTER_VERTICAL);
-        txt.setText(values.get(position));
-        txt.setTextColor(ctx.getColor(R.color.primaryColor));
-
+        txt.setText(values.get(position).getTemplateName());
+        //txt.setTextColor(parseColor("#000000"));
 
         return view;
     }
@@ -80,8 +80,7 @@ public class CustomSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
         TextView txt = (TextView)view.findViewById(R.id.spID);
         txt.setGravity(Gravity.CENTER_VERTICAL);
         txt.setPadding(12, 12, 12, 12);
-        txt.setText(values.get(position));
-        txt.setTextColor(ctx.getColor(R.color.primaryColor));
+        txt.setText(values.get(position).getTemplateName());
         return view;
     }
 }

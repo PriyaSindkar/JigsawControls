@@ -7,6 +7,7 @@ public class Component {
     String componentName;
     String componentDetails;
     String componentPhoto;
+    String categoryId;
 
     public Component() {
     }
@@ -41,6 +42,13 @@ public class Component {
         this.componentPhoto = componentPhoto;
     }
 
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
 
     @Override
     public String toString() {
@@ -48,6 +56,7 @@ public class Component {
                 "componentName='" + componentName + '\'' +
                 ", componentDetails='" + componentDetails + '\'' +
                 ", componentPhoto='" + componentPhoto + '\'' +
+                ", categoryId='" + categoryId + '\'' +
                 '}';
     }
 }

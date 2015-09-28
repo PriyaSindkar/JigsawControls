@@ -3,9 +3,9 @@
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_margin="@dimen/STD_MARGIN"
-    android:id="@+id/spID"
+    android:id="@+id/txtSpinner"
     android:textSize="@dimen/L_TEXT_SIZE"
-    android:text="kdnfdfn"
+    android:text="ascevrh"
     android:gravity="center"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"

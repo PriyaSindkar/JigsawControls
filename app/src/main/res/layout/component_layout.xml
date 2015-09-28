@@ -30,7 +30,7 @@
                     android:id="@+id/edtComponent1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Component Details"
+                    android:hint="Enter Equipment Serial No"
                     android:textColor="@color/primaryColor"
                     android:inputType="text"
                     android:textColorHint="#d1d1d1"/>
