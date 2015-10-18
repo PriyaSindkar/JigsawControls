@@ -54,7 +54,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 SharedPreferences preferences = getActivity().getSharedPreferences("login", getActivity().MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.clear();
+                editor.remove("isUserLogin");
                 editor.commit();
 
                 Intent intent = new Intent(getActivity(), QuickAccessActivity.class);

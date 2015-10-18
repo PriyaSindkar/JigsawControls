@@ -13,7 +13,7 @@
     <dimen name="SMALL_STD_MARGIN">2dp</dimen>
     <dimen name="BUTTON_HEIGHT">70dp</dimen>
 
-    <dimen name="LOGO_SIZE">50dp</dimen>
+    <dimen name="LOGO_SIZE">0dp</dimen>
     <dimen name="HEADER_SIZE">48dp</dimen>
     <dimen name="CARD_SIZE">100dp</dimen>
 </resources>

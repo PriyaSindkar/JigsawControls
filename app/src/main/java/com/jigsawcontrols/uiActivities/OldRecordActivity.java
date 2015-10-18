@@ -13,9 +13,9 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -25,14 +25,17 @@ import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.jigsawcontrols.R;
-import com.jigsawcontrols.adapters.CustomSpinnerAdapter;
+import com.jigsawcontrols.adapters.CustomSerialNoSpinnerAdapter;
+import com.jigsawcontrols.adapters.CustomTemplateSpinnerAdapter;
 import com.jigsawcontrols.apiHelpers.CallWebService;
 import com.jigsawcontrols.helpers.ComplexPreferences;
 import com.jigsawcontrols.model.CategoryEquipmentModel;
 import com.jigsawcontrols.model.Component;
 import com.jigsawcontrols.model.Order;
+import com.jigsawcontrols.model.SerialNoModel;
 import com.jigsawcontrols.model.TemplateModel;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,6 +49,7 @@ public class OldRecordActivity extends AppCompatActivity {
 
     private TextView txtOrderDate, imgBack,txtSubmit ;
     private Spinner spCategories, spCatSerialNo;
+    ImageView removeImage;
     private List<String> categories, catSerialNos;
     private ArrayAdapter<String> adapter;
     private Order savedOrder;
@@ -58,13 +62,16 @@ public class OldRecordActivity extends AppCompatActivity {
     ComplexPreferences complexPreferences;
 
     private String GET_TEMPLATES_URL = "http://jigsawserverpink.com/admin/getTemplate.php";
+    private String GET_SERIALNOS_URL = "http://jigsawserverpink.com/admin/getSerial.php";
+
     private ArrayList<CategoryEquipmentModel> categoryEquipmentModels;
     private ArrayList<Object> categoriesList = new ArrayList<>();
 
+    private ArrayList<SerialNoModel> serialNoModels;
+
     ArrayList<Component> equipment;
-    private CustomSpinnerAdapter mAdapter;
-    private ArrayList<Component> componentsForTemplateSelected;
-    private boolean isFirstTime = true;
+    private CustomTemplateSpinnerAdapter mAdapter;
+    private CustomSerialNoSpinnerAdapter mSAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,7 +114,7 @@ public class OldRecordActivity extends AppCompatActivity {
         line.setVisibility(View.GONE);
 
         imgBack = (TextView) findViewById(R.id.imgBack);
-        imgBack.setText("Work In Progress");
+        imgBack.setText("Incomplete Order");
 
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,8 +131,9 @@ public class OldRecordActivity extends AppCompatActivity {
         spCatSerialNo= (Spinner) findViewById(R.id.spCatSerialNo);
 
         getTemplates();
+        getSerialNos();
 
-        catSerialNos = new ArrayList<>();
+        /*catSerialNos = new ArrayList<>();
         catSerialNos.add("JSW20091517-01");
         catSerialNos.add("JSW20091517-02");
         catSerialNos.add("JSW20091517-03");
@@ -133,7 +141,7 @@ public class OldRecordActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown, catSerialNos);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCatSerialNo.setAdapter(adapter);
-
+*/
 
 
         txtSubmit.setOnClickListener(new View.OnClickListener() {
@@ -201,11 +209,24 @@ public class OldRecordActivity extends AppCompatActivity {
         return index;
     }
 
+    private int getSerialNoIndex(Spinner spinner, String myString) {
+        int index = 0;
+
+        for (int i=1;i<spinner.getCount(); i++){
+            SerialNoModel serialNoModel = (SerialNoModel) spinner.getItemAtPosition(i);
+            if ( serialNoModel.serialNo.equalsIgnoreCase(myString)){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
     private void setSavedDetails() {
 
         if(savedOrder!=null) {
             spCategories.setSelection(getTemplateIndex(spCategories, savedOrder.getCategory()));
-            spCatSerialNo.setSelection(getSimpleIndex(spCatSerialNo, savedOrder.getCatSerialNumber()));
+            spCatSerialNo.setSelection(getSerialNoIndex(spCatSerialNo, savedOrder.getCatSerialNumber()));
             txtOrderDate.setText(savedOrder.getOrderDate());
             addImageLayout(savedOrder.getComponents());
         }
@@ -226,14 +247,30 @@ public class OldRecordActivity extends AppCompatActivity {
 
                 imgCapture1 = (ImageView) inflatedLayout.findViewById(R.id.imgCapture1);
                 imgComponent1 = (ImageView) inflatedLayout.findViewById(R.id.imgComponent1);
+
+                removeImage = (ImageView)  inflatedLayout.findViewById(R.id.imgRemove);
+                removeImage.setVisibility(View.GONE);
+                removeImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        image.setImageResource(android.R.color.transparent);
+                    }
+                });
+
                 if(savedOrderComponents.get(i).getComponentPhoto() != null && !savedOrderComponents.get(i).getComponentPhoto().equals("")) {
                     imgComponent1.setImageBitmap(getImageBitmapFromString(savedOrderComponents.get(i).getComponentPhoto()));
+                    removeImage.setVisibility(View.VISIBLE);
+                } else {
+                    removeImage.setVisibility(View.GONE);
                 }
+
+
 
                 imgCapture1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        image = (ImageView) ((LinearLayout) view.getParent()).getChildAt(0);
+                        FrameLayout frame = (FrameLayout)((LinearLayout) view.getParent()).getChildAt(0);
+                        image = (ImageView)  frame.findViewById(R.id.imgComponent1);
                         captureImage();
                     }
                 });
@@ -287,6 +324,49 @@ public class OldRecordActivity extends AppCompatActivity {
         }.start();
     }
 
+    private void getSerialNos() {
+
+        final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
+        circleDialog.setCancelable(true);
+        circleDialog.show();
+
+        new CallWebService(GET_SERIALNOS_URL, CallWebService.TYPE_JSONOBJECT) {
+
+            @Override
+            public void response(String response) {
+
+                circleDialog.dismiss();
+
+                Log.e("RESP serialNos_Details", response);
+
+                try {
+                    JSONObject msg = new JSONObject(response);
+
+                    if (msg.getString("status").equals("1")) {
+                        JSONArray data= msg.getJSONArray("data");
+
+                        Type listType = new TypeToken<List<SerialNoModel>>() {
+                        }.getType();
+
+                        serialNoModels =  new GsonBuilder().create().fromJson(data.toString(), listType);
+                        Log.e("serialNoModels", serialNoModels.toString());
+
+                        mSAdapter = new CustomSerialNoSpinnerAdapter(OldRecordActivity.this, serialNoModels,R.layout.spinner_dropdown, R.layout.spinner_layout );
+                        spCatSerialNo.setAdapter(mSAdapter);
+                    }
+                }catch(JSONException jsonEx) {
+                    Log.e("JSON EXCEPTION: ", jsonEx.toString());
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                Log.e("VOLLEY ERROR", error.toString());
+                circleDialog.dismiss();
+            }
+        }.start();
+    }
+
     private void setCategories() {
         ArrayList<TemplateModel> templates = new ArrayList<>();
         categories.clear();
@@ -305,7 +385,7 @@ public class OldRecordActivity extends AppCompatActivity {
                 equipment.add(component);
             }
         }
-        mAdapter = new CustomSpinnerAdapter(OldRecordActivity.this, templates,R.layout.spinner_dropdown, R.layout.spinner_layout );
+        mAdapter = new CustomTemplateSpinnerAdapter(OldRecordActivity.this, templates,R.layout.spinner_dropdown, R.layout.spinner_layout );
         spCategories.setAdapter(mAdapter);
 
         Log.e("equipment", equipment.toString());
@@ -338,6 +418,8 @@ public class OldRecordActivity extends AppCompatActivity {
         thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
 
         image.setImageBitmap(thumbnail);
+        removeImage.setVisibility(View.VISIBLE);
+
     }
 
     public Bitmap getImageBitmapFromString(String profilePic) {

@@ -1,7 +1,9 @@
 package com.jigsawcontrols.apiHelpers;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -38,6 +40,19 @@ public class MyApplication extends Application {
         // initialize the singleton
         sInstance = this;
 
+        SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
+        if(preferences.contains("isFirstTimeAccess")) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("isFirstTimeAccess", false);
+            editor.commit();
+        } else {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("isFirstTimeAccess", true);
+            editor.commit();
+        }
+
+
+        Log.e("app", "app");
 
     }
 

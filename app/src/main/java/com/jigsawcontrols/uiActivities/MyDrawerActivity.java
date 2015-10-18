@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.jigsawcontrols.R;
+import com.jigsawcontrols.uiFragments.ChangeAccessCodeFragment;
+import com.jigsawcontrols.uiFragments.ChangePasswordFragment;
 import com.jigsawcontrols.uiFragments.HomeFragment;
 
 
@@ -93,8 +95,20 @@ public class MyDrawerActivity extends ActionBarActivity implements NavigationVie
                 fragmentTransaction.commit();
                     return true;
             case R.id.change_OTP:
+
+                FragmentManager fragmentManager1 = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager1.beginTransaction();
+                Fragment changeAccessCode = new ChangeAccessCodeFragment();
+                fragmentTransaction.replace(R.id.frame, changeAccessCode);
+                fragmentTransaction.commit();
+
                 return true;
             case R.id.change_login_password:
+                FragmentManager fragmentManager2 = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager2.beginTransaction();
+                Fragment changePassword = new ChangePasswordFragment();
+                fragmentTransaction.replace(R.id.frame, changePassword);
+                fragmentTransaction.commit();
                 return true;
             default:
                 return true;

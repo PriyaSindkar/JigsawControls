@@ -59,14 +59,26 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
+                    <FrameLayout
+                        android:layout_width="@dimen/LOGO_SIZE"
+                        android:layout_height="@dimen/LOGO_SIZE"
+                        android:background="@drawable/standard_button_border">
+
                     <ImageView
                         android:id="@+id/imgComponent1"
                         android:layout_width="@dimen/LOGO_SIZE"
                         android:layout_height="@dimen/LOGO_SIZE"
-                        android:padding="@dimen/STD_MARGIN"
-                        android:layout_margin="@dimen/STD_MARGIN"
-                        android:background="@drawable/standard_button_border"
                         android:scaleType="fitXY"/>
+
+                        <ImageView
+                            android:id="@+id/imgRemove"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:padding="@dimen/STD_PADDING"
+                            android:src="@drawable/ic_navigation_cancel"/>
+
+                    </FrameLayout>
 
                     <ImageView
                         android:id="@+id/imgCapture1"
@@ -74,7 +86,7 @@
                         android:layout_width="@dimen/LOGO_SIZE"
                         android:layout_height="@dimen/LOGO_SIZE"
                         android:src="@drawable/ic_add"
-                        android:padding="@dimen/STD_PADDING"
+                        android:padding="@dimen/VS_TEXT_SIZE"
                         android:textColor="@color/white"
                         android:background="@drawable/standard_button_border"/>
                 </LinearLayout>

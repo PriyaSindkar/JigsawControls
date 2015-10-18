@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -23,15 +25,18 @@ import com.android.volley.VolleyError;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.jigsawcontrols.R;
-import com.jigsawcontrols.adapters.CustomSpinnerAdapter;
+import com.jigsawcontrols.adapters.CustomSerialNoSpinnerAdapter;
+import com.jigsawcontrols.adapters.CustomTemplateSpinnerAdapter;
 import com.jigsawcontrols.apiHelpers.CallWebService;
 import com.jigsawcontrols.helpers.ComplexPreferences;
 import com.jigsawcontrols.helpers.Utility;
 import com.jigsawcontrols.model.CategoryEquipmentModel;
 import com.jigsawcontrols.model.Component;
 import com.jigsawcontrols.model.Order;
+import com.jigsawcontrols.model.SerialNoModel;
 import com.jigsawcontrols.model.TemplateModel;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,11 +60,15 @@ public class NewRecordActivity extends AppCompatActivity{
     private Order newOrder;
 
     private String GET_TEMPLATES_URL = "http://jigsawserverpink.com/admin/getTemplate.php";
+    private String GET_SERIALNOS_URL = "http://jigsawserverpink.com/admin/getSerial.php";
     private ArrayList<CategoryEquipmentModel> categoryEquipmentModels;
     private ArrayList<Object> categoriesList = new ArrayList<>();
 
+    private ArrayList<SerialNoModel> serialNoModels;
+
     ArrayList<Component> equipment;
-    private CustomSpinnerAdapter mAdapter;
+    private CustomTemplateSpinnerAdapter mAdapter;
+    private CustomSerialNoSpinnerAdapter mSAdapter;
     private ArrayList<Component> componentsForTemplateSelected;
 
     @Override
@@ -103,9 +112,8 @@ public class NewRecordActivity extends AppCompatActivity{
                 } else {
                     newOrder = new Order();
                     newOrder.setOrderDate(txtOrderDate.getText().toString().trim());
-                    Log.e("CAT_SELECTED", ((TemplateModel) spCategories.getSelectedItem()).getTemplateName());
-                    newOrder.setCategory(((TemplateModel)spCategories.getSelectedItem()).getTemplateName() );
-                    newOrder.setCatSerialNumber(spCatSerialNo.getSelectedItem().toString());
+                    newOrder.setCategory(((TemplateModel) spCategories.getSelectedItem()).getTemplateName());
+                    newOrder.setCatSerialNumber(((SerialNoModel) spCatSerialNo.getSelectedItem()).serialNo);
                     newOrder.setComponents(getComponentsDetails());
 
                     ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(NewRecordActivity.this, "saved-record", 0);
@@ -134,15 +142,16 @@ public class NewRecordActivity extends AppCompatActivity{
         txtSave = (TextView) findViewById(R.id.txtSave);
 
         getTemplates();
+        getSerialNos();
 
-        catSerialNos = new ArrayList<>();
+       /* catSerialNos = new ArrayList<>();
         catSerialNos.add("JSW20091517-01");
         catSerialNos.add("JSW20091517-02");
         catSerialNos.add("JSW20091517-03");
 
         serialNoAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown, catSerialNos);
         serialNoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCatSerialNo.setAdapter(serialNoAdapter);
+        spCatSerialNo.setAdapter(serialNoAdapter);*/
 
         spCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -150,8 +159,8 @@ public class NewRecordActivity extends AppCompatActivity{
                 if (spCategories.getItemAtPosition(i) != null) {
                     String templateId = ((TemplateModel) mAdapter.getItem(i)).getTemplateId();
                     componentsForTemplateSelected = new ArrayList<Component>();
-                    for(int c=0; c < equipment.size();c++) {
-                        if(equipment.get(c).getCategoryId().equals(templateId)) {
+                    for (int c = 0; c < equipment.size(); c++) {
+                        if (equipment.get(c).getCategoryId().equals(templateId)) {
                             componentsForTemplateSelected.add(equipment.get(c));
                         }
                     }
@@ -222,10 +231,19 @@ public class NewRecordActivity extends AppCompatActivity{
             imgComponent1 = (ImageView) inflatedLayout.findViewById(R.id.imgComponent1);
             //image = imgComponent1;
 
+            ImageView removeImage = (ImageView)  inflatedLayout.findViewById(R.id.imgRemove);
+            removeImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    image.setImageResource(android.R.color.transparent);
+                }
+            });
+
             imgCapture1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    image = (ImageView) ((LinearLayout) view.getParent()).getChildAt(0);
+                    FrameLayout frame = (FrameLayout)((LinearLayout) view.getParent()).getChildAt(0);
+                    image = (ImageView)  frame.findViewById(R.id.imgComponent1);
                     captureImage();
                     //image.setImageBitmap(thumbnail);
                 }
@@ -267,7 +285,9 @@ public class NewRecordActivity extends AppCompatActivity{
                 ImageView componentImage = (ImageView) child.findViewById(R.id.imgComponent1);
                 String componentPhoto = "";
                 if (componentImage.getDrawable() != null) {
-                    componentPhoto = Utility.returnBas64Image(getImage(componentImage));
+                    if(getImage(componentImage) != null) {
+                        componentPhoto = Utility.returnBas64Image(getImage(componentImage));
+                    }
                 }
                 Component component = new Component(componentName, componentDetails, componentPhoto);
                 components.add(component);
@@ -277,7 +297,13 @@ public class NewRecordActivity extends AppCompatActivity{
     }
 
     public Bitmap getImage(ImageView ivImage) {
-        return ((BitmapDrawable) ivImage.getDrawable()).getBitmap();
+        Bitmap bitmap;
+        if(ivImage.getDrawable() instanceof BitmapDrawable) {
+            bitmap  = ((BitmapDrawable) ivImage.getDrawable()).getBitmap();
+        } else {
+            bitmap = null;
+        }
+        return bitmap;
     }
 
     private void getTemplates() {
@@ -345,6 +371,49 @@ public class NewRecordActivity extends AppCompatActivity{
         }.start();
     }
 
+    private void getSerialNos() {
+
+        final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
+        circleDialog.setCancelable(true);
+        circleDialog.show();
+
+        new CallWebService(GET_SERIALNOS_URL, CallWebService.TYPE_JSONOBJECT) {
+
+            @Override
+            public void response(String response) {
+
+                circleDialog.dismiss();
+
+                Log.e("RESP serialNos_Details", response);
+
+                try {
+                    JSONObject msg = new JSONObject(response);
+
+                    if (msg.getString("status").equals("1")) {
+                        JSONArray data= msg.getJSONArray("data");
+
+                        Type listType = new TypeToken<List<SerialNoModel>>() {
+                        }.getType();
+
+                        serialNoModels =  new GsonBuilder().create().fromJson(data.toString(), listType);
+                        Log.e("serialNoModels", serialNoModels.toString());
+
+                        mSAdapter = new CustomSerialNoSpinnerAdapter(NewRecordActivity.this, serialNoModels,R.layout.spinner_dropdown, R.layout.spinner_layout );
+                        spCatSerialNo.setAdapter(mSAdapter);
+                    }
+                }catch(JSONException jsonEx) {
+                    Log.e("JSON EXCEPTION: ", jsonEx.toString());
+                }
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                Log.e("VOLLEY ERROR", error.toString());
+                circleDialog.dismiss();
+            }
+        }.start();
+    }
+
     private void setCategories() {
         ArrayList<TemplateModel> templates = new ArrayList<>();
         categories.clear();
@@ -363,7 +432,7 @@ public class NewRecordActivity extends AppCompatActivity{
                 equipment.add(component);
             }
         }
-        mAdapter = new CustomSpinnerAdapter(NewRecordActivity.this, templates,R.layout.spinner_dropdown, R.layout.spinner_layout );
+        mAdapter = new CustomTemplateSpinnerAdapter(NewRecordActivity.this, templates,R.layout.spinner_dropdown, R.layout.spinner_layout );
         spCategories.setAdapter(mAdapter);
 
         Log.e("equipment", equipment.toString());

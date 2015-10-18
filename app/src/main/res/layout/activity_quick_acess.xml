@@ -12,6 +12,19 @@
         android:layout_marginBottom="@dimen/HEADER_SIZE"
         android:src="@drawable/logo"/>
 
+    <TextView
+        android:id="@+id/txtAccessCodeChanged"
+        android:layout_below="@id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/VS_TEXT_SIZE"
+        android:layout_alignParentLeft="true"
+        android:textStyle="bold"
+        android:textColor="#FF69B4"
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/STD_MARGIN"
+        android:text="Your Quick Access Code is: 123456."/>
+
 
     <LinearLayout
         android:layout_centerInParent="true"
@@ -37,7 +50,7 @@
             android:layout_height="@dimen/HEADER_SIZE"
             android:layout_margin="@dimen/L_TEXT_SIZE"
             app:textColor="@color/secondaryColor"
-            app:textSize="@dimen/L_TEXT_SIZE"
+            app:textSize="@dimen/VL_TEXT_SIZE"
             app:lineColor="@color/primaryColor"
             app:lineWidth="1dp"
             app:gridColor="#ffffff"
@@ -56,9 +69,30 @@
                 android:text="Login"
                 style="@style/my_buttons"/>
 
+        <TextView
+            android:id="@+id/txtForgotAccessCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/S_TEXT_SIZE"
+            android:layout_gravity="right"
+            android:textStyle="bold"
+            android:textColor="#FF69B4"
+            android:layout_marginRight="@dimen/STD_MARGIN"
+            android:layout_marginBottom="@dimen/STD_MARGIN"
+            android:text="Forgort Quick Access Code?"/>
+
     </LinearLayout>
 
-
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/S_TEXT_SIZE"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:textStyle="bold"
+        android:textColor="#FF69B4"
+        android:layout_marginRight="@dimen/STD_MARGIN"
+        android:layout_marginBottom="@dimen/L_TEXT_SIZE"
+        android:text="Your Quick Access Code is 123456 by default."/>
 
 </RelativeLayout>

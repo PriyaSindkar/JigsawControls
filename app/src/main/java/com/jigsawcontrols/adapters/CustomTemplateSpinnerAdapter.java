@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Priya on 9/10/2015.
  */
-public class CustomSpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
+public class CustomTemplateSpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
     LayoutInflater layoutInflator;
     List<TemplateModel> values;
 
@@ -26,12 +26,12 @@ public class CustomSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
     Context ctx;
     int mainSpinnerView,dropSpinnerView;
 
-    public CustomSpinnerAdapter(Context ctx, List<TemplateModel> templates){
+    public CustomTemplateSpinnerAdapter(Context ctx, List<TemplateModel> templates){
         this.ctx = ctx;
         this.values = templates;
     }
 
-    public CustomSpinnerAdapter(Context context, List<TemplateModel> values, int mainView, int dropView) {
+    public CustomTemplateSpinnerAdapter(Context context, List<TemplateModel> values, int mainView, int dropView) {
         this.values = values;
         ctx = context;
         mainSpinnerView =mainView;
