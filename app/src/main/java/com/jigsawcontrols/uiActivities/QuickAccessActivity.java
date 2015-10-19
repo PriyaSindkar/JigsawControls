@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jigsawcontrols.R;
+import com.jigsawcontrols.helpers.AdvancedSpannableString;
 import com.jungly.gridpasswordview.GridPasswordView;
 
 import org.w3c.dom.Text;
@@ -21,7 +22,7 @@ import org.w3c.dom.Text;
 public class QuickAccessActivity extends AppCompatActivity {
     private Button btnLogin;
     private GridPasswordView pswView;
-    private TextView txtForgotAccessCode, txtAccessCodeChanged;
+    private TextView txtForgotAccessCode, txtAccessCodeChanged,txtBottomCode;
 
 
     @Override
@@ -33,6 +34,11 @@ public class QuickAccessActivity extends AppCompatActivity {
         pswView = (GridPasswordView) findViewById(R.id.pswView);
         txtForgotAccessCode = (TextView) findViewById(R.id.txtForgotAccessCode);
         txtAccessCodeChanged = (TextView) findViewById(R.id.txtAccessCodeChanged);
+        txtBottomCode= (TextView) findViewById(R.id.txtBottomCode);
+
+        AdvancedSpannableString span = new AdvancedSpannableString("Your Quick Access Code is 123456 by default.");
+        span.setBold("123456");
+        txtBottomCode.setText(span);
 
         if(getIntent().getBooleanExtra("is_access_code_default", false)) {
             txtAccessCodeChanged.setVisibility(View.VISIBLE);

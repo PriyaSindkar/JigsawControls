@@ -84,12 +84,12 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/txtBottomCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/S_TEXT_SIZE"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:textStyle="bold"
+        android:layout_centerInParent="true"
         android:textColor="#FF69B4"
         android:layout_marginRight="@dimen/STD_MARGIN"
         android:layout_marginBottom="@dimen/L_TEXT_SIZE"
