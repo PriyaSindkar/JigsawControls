@@ -49,45 +49,51 @@ public class QuickAccessActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
-                if(getIntent().getBooleanExtra("is_access_code_default", false)) {
-                    if ("123456".equals(pswView.getPassWord())) {
-                        if (preferences.contains("isUserLogin")) {
-                            Intent intent = new Intent(getBaseContext(), MyDrawerActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Intent intent = new Intent(QuickAccessActivity.this, LoginActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
-                        }
-                    } else {
-                        Snackbar.make(view, "Please enter valid access code.", Snackbar.LENGTH_LONG).show();
-                    }
-                } else {
-                    if (preferences.getString("quick_access_code", "").equals(pswView.getPassWord())) {
-                        if (preferences.contains("isUserLogin")) {
-                            Intent intent = new Intent(getBaseContext(), MyDrawerActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Intent intent = new Intent(QuickAccessActivity.this, LoginActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
-                        }
-                    } else {
-                        if (preferences.getBoolean("isFirstTimeAccess", false)) {
-                            preferences.edit().putBoolean("isFirstTimeAccess", false).commit();
-                            preferences.edit().putString("quick_access_code", "123456").commit();
 
-                            Intent intent = new Intent(QuickAccessActivity.this, LoginActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
+                if (pswView.getPassWord().length() != 6) {
+                    Snackbar.make(view, "Access Code must be 6 digits.", Snackbar.LENGTH_LONG).show();
+                } else {
+
+                    SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
+                    if (getIntent().getBooleanExtra("is_access_code_default", false)) {
+                        if ("123456".equals(pswView.getPassWord())) {
+                            if (preferences.contains("isUserLogin")) {
+                                Intent intent = new Intent(getBaseContext(), MyDrawerActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Intent intent = new Intent(QuickAccessActivity.this, LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
                         } else {
                             Snackbar.make(view, "Please enter valid access code.", Snackbar.LENGTH_LONG).show();
+                        }
+                    } else {
+                        if (preferences.getString("quick_access_code", "").equals(pswView.getPassWord())) {
+                            if (preferences.contains("isUserLogin")) {
+                                Intent intent = new Intent(getBaseContext(), MyDrawerActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Intent intent = new Intent(QuickAccessActivity.this, LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+                        } else {
+                            if (preferences.getBoolean("isFirstTimeAccess", false)) {
+                                preferences.edit().putBoolean("isFirstTimeAccess", false).commit();
+                                preferences.edit().putString("quick_access_code", "123456").commit();
+
+                                Intent intent = new Intent(QuickAccessActivity.this, LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Snackbar.make(view, "Please enter valid access code.", Snackbar.LENGTH_LONG).show();
+                            }
                         }
                     }
                 }

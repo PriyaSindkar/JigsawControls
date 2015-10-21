@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
@@ -21,22 +22,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:maxLength="6"
-            android:id="@+id/edtAccessCode"
+        <com.jungly.gridpasswordview.GridPasswordView
+            android:id="@+id/pswView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="New Access Code"
-            android:inputType="numberPassword"
-            android:singleLine="true"
-            android:textColorHint="#d1d1d1"
-            android:textColor="@color/primaryColor"
-            android:textSize="@dimen/L_TEXT_SIZE" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_height="@dimen/HEADER_SIZE"
+            android:layout_margin="@dimen/L_TEXT_SIZE"
+            app:textColor="@color/secondaryColor"
+            app:textSize="@dimen/VL_TEXT_SIZE"
+            app:lineColor="@color/primaryColor"
+            app:lineWidth="1dp"
+            app:gridColor="#ffffff"
+            app:passwordLength="6"
+            app:passwordTransformation="."
+            app:passwordType="numberPassword"/>
 
         <Button
             android:id="@+id/btnLogin"

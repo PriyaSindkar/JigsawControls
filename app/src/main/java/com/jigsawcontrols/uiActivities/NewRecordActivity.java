@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
@@ -21,13 +20,17 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.jigsawcontrols.R;
 import com.jigsawcontrols.adapters.CustomSerialNoSpinnerAdapter;
 import com.jigsawcontrols.adapters.CustomTemplateSpinnerAdapter;
 import com.jigsawcontrols.apiHelpers.CallWebService;
+import com.jigsawcontrols.apiHelpers.MyApplication;
 import com.jigsawcontrols.helpers.ComplexPreferences;
 import com.jigsawcontrols.helpers.Utility;
 import com.jigsawcontrols.model.CategoryEquipmentModel;
@@ -42,7 +45,9 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -58,9 +63,14 @@ public class NewRecordActivity extends AppCompatActivity{
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private LinearLayout linearComponentsParent;
     private Order newOrder;
+    private boolean isSerialNoSaved = false;
 
     private String GET_TEMPLATES_URL = "http://jigsawserverpink.com/admin/getTemplate.php";
     private String GET_SERIALNOS_URL = "http://jigsawserverpink.com/admin/getSerial.php";
+    private String POST_SAVE_FOR_LATER_URL = "http://jigsawserverpink.com/admin/saveLaterOrder.php";
+    private String POST_SUBMIT_ORDER_URL = "http://jigsawserverpink.com/admin/addOrder.php";
+    private String POST_SUBMIT_ORDER_IMAGES_URL = "http://jigsawserverpink.com/admin/updateOrderImage.php";
+
     private ArrayList<CategoryEquipmentModel> categoryEquipmentModels;
     private ArrayList<Object> categoriesList = new ArrayList<>();
 
@@ -94,7 +104,12 @@ public class NewRecordActivity extends AppCompatActivity{
             }
         });
 
-        txtOrderDate.setText("Order Date: 2015-10-10 11:30:00");
+        Calendar c = Calendar.getInstance();
+
+        SimpleDateFormat df = new SimpleDateFormat("dd/MMM/yyyy HH:mm");
+        String formattedDate = df.format(c.getTime());
+
+        txtOrderDate.setText(formattedDate);
 
 
 
@@ -116,11 +131,38 @@ public class NewRecordActivity extends AppCompatActivity{
                     newOrder.setCatSerialNumber(((SerialNoModel) spCatSerialNo.getSelectedItem()).serialNo);
                     newOrder.setComponents(getComponentsDetails());
 
-                    ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(NewRecordActivity.this, "saved-record", 0);
-                    complexPreferences.putObject("saved-record", newOrder);
-                    complexPreferences.commit();
+                    if (saveForLaterPostCall()) {
+                        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(NewRecordActivity.this, "saved-record", 0);
+                        complexPreferences.putObject("saved-record", newOrder);
+                        complexPreferences.commit();
 
-                    Snackbar.make(view, "Order Saved For Later Use!", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, "Order Saved For Later Use!", Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        Snackbar.make(view, "Oops!", Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
+        txtSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                if (spCategories.getSelectedItem().toString().trim().equals("Select Trolley Category")) {
+                    Snackbar snack = Snackbar.make(spCategories, "Please Select a Category!", Snackbar.LENGTH_SHORT);
+                    snack.show();
+                } else if (spCatSerialNo.getSelectedItem().toString().trim().equals("Select Serial Number")) {
+                    Snackbar snack = Snackbar.make(spCatSerialNo, "Please Select Serial No!", Snackbar.LENGTH_SHORT);
+                    snack.show();
+                } else {
+                    newOrder = new Order();
+                    newOrder.setOrderDate(txtOrderDate.getText().toString().trim());
+                    newOrder.setCategory(((TemplateModel) spCategories.getSelectedItem()).getTemplateName());
+                    newOrder.setCatSerialNumber(((SerialNoModel) spCatSerialNo.getSelectedItem()).serialNo);
+                    newOrder.setComponents(getComponentsDetails());
+
+                    submitOrderPostCAll(newOrder);
                 }
             }
         });
@@ -437,6 +479,204 @@ public class NewRecordActivity extends AppCompatActivity{
 
         Log.e("equipment", equipment.toString());
     }
+
+    private boolean saveForLaterPostCall() {
+
+        try {
+
+            JSONObject jsonObject = new JSONObject();
+
+            jsonObject.put("s_no", ((SerialNoModel)spCatSerialNo.getSelectedItem()).serialNo);
+
+            Log.e("SAVE_LATER JSON : ", "" + jsonObject.toString());
+
+
+            final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
+            circleDialog.setCancelable(true);
+            circleDialog.show();
+
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, POST_SAVE_FOR_LATER_URL, jsonObject, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject msg) {
+                    circleDialog.dismiss();
+
+                    String response1 = msg.toString();
+                    Log.e("Resp SAVE_LATER: ", "" + response1);
+
+                    try {
+                        JSONObject response = new JSONObject(msg.toString());
+
+                        if (!response.getString("msg").equals("0")) {
+                            isSerialNoSaved = true;
+                        } else {
+                            Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
+                        Log.e("EXCEPTION", e.toString());
+                    }
+
+
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
+                    Log.e("VOLLEY EXCEPTION", error.toString());
+                    circleDialog.dismiss();
+
+
+                }
+            });
+            MyApplication.getInstance().addToRequestQueue(req);
+
+        } catch (Exception ex) {
+            Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
+            Log.e("JSON EXCEPTION", ex.toString());
+        }
+        return isSerialNoSaved;
+    }
+
+    private void submitOrderPostCAll(Order order) {
+
+        try {
+
+            JSONObject jsonObject = new JSONObject();
+
+            jsonObject.put("o_date", order.getOrderDate());
+            jsonObject.put("trolley_catg_name", order.getCategory());
+
+            StringBuilder equipmentDetails = new StringBuilder();
+            final ArrayList<Component> components = order.getComponents();
+
+            for(int i=0; i<components.size(); i++) {
+                Component component = components.get(i);
+                equipmentDetails.append("Equipment name: "+component.getComponentName()+" \n "+
+                        "Equipment serial no.: "+component.getComponentDetails()+" \n ,");
+            }
+
+            jsonObject.put("equipment_details", equipmentDetails);
+            jsonObject.put("adminName", "admin name");
+            jsonObject.put("adminEmail", "admin email");
+            jsonObject.put("serial_no", order.getCatSerialNumber());
+
+            Log.e("ORDER JSON : ", "" + jsonObject.toString());
+
+
+            final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
+            circleDialog.setCancelable(true);
+            circleDialog.show();
+
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, POST_SUBMIT_ORDER_URL, jsonObject, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject msg) {
+                    circleDialog.dismiss();
+
+                    String response1 = msg.toString();
+                    Log.e("Resp ORDER: ", "" + response1);
+
+                    try {
+                        JSONObject response = new JSONObject(msg.toString());
+
+                        if (!response.getString("msg").equals("0")) {
+                            String generatedOrderID = response.getString("order_id");
+
+                            for(int i=0; i<components.size(); i++) {
+                                submitOrderImagesPostCall(generatedOrderID, components.get(i).getComponentPhoto());
+                            }
+
+                            Snackbar.make(txtSave, "Order Submitted Successfully.", Snackbar.LENGTH_LONG).show();
+                        } else {
+                            Snackbar.make(txtSave, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        Snackbar.make(txtSave, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                        Log.e("EXCEPTION", e.toString());
+                    }
+
+
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Snackbar.make(txtSave, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                    Log.e("VOLLEY EXCEPTION", error.toString());
+                    circleDialog.dismiss();
+
+
+                }
+            });
+            MyApplication.getInstance().addToRequestQueue(req);
+
+        } catch (Exception ex) {
+            Snackbar.make(txtSave, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+            Log.e("JSON EXCEPTION", ex.toString());
+        }
+    }
+
+    private void submitOrderImagesPostCall(String orderid, String img) {
+
+        try {
+
+            JSONObject jsonObject = new JSONObject();
+
+            jsonObject.put("img", img);
+            jsonObject.put("order_id", orderid);
+
+            Log.e("ORDER_IMAGES JSON : ", "" + jsonObject.toString());
+
+
+            final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
+            circleDialog.setCancelable(true);
+            circleDialog.show();
+
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, POST_SUBMIT_ORDER_IMAGES_URL, jsonObject, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject msg) {
+                    circleDialog.dismiss();
+
+                    String response1 = msg.toString();
+                    Log.e("Resp ORDER_IMAGES: ", "" + response1);
+
+                    try {
+                        JSONObject response = new JSONObject(msg.toString());
+
+                        if (!response.getString("msg").equals("0")) {
+                        } else {
+                            Snackbar.make(txtSave, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        Snackbar.make(txtSave, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                        Log.e("EXCEPTION", e.toString());
+                    }
+
+
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Snackbar.make(txtSave, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                    Log.e("VOLLEY EXCEPTION", error.toString());
+                    circleDialog.dismiss();
+
+
+                }
+            });
+            MyApplication.getInstance().addToRequestQueue(req);
+
+        } catch (Exception ex) {
+            Snackbar.make(txtSave, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+            Log.e("JSON EXCEPTION", ex.toString());
+        }
+    }
+
+
 
     // end of main class
 }

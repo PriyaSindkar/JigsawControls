@@ -13,6 +13,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -21,14 +22,19 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.jigsawcontrols.R;
 import com.jigsawcontrols.adapters.CustomSerialNoSpinnerAdapter;
 import com.jigsawcontrols.adapters.CustomTemplateSpinnerAdapter;
 import com.jigsawcontrols.apiHelpers.CallWebService;
+import com.jigsawcontrols.apiHelpers.MyApplication;
 import com.jigsawcontrols.helpers.ComplexPreferences;
+import com.jigsawcontrols.helpers.Utility;
 import com.jigsawcontrols.model.CategoryEquipmentModel;
 import com.jigsawcontrols.model.Component;
 import com.jigsawcontrols.model.Order;
@@ -47,8 +53,8 @@ import java.util.List;
 
 public class OldRecordActivity extends AppCompatActivity {
 
-    private TextView txtOrderDate, imgBack,txtSubmit ;
-    private Spinner spCategories, spCatSerialNo;
+    private TextView txtOrderDate, imgBack,txtSubmit,txtSerialNo ;
+    private Spinner spCategories;
     ImageView removeImage;
     private List<String> categories, catSerialNos;
     private ArrayAdapter<String> adapter;
@@ -62,12 +68,12 @@ public class OldRecordActivity extends AppCompatActivity {
     ComplexPreferences complexPreferences;
 
     private String GET_TEMPLATES_URL = "http://jigsawserverpink.com/admin/getTemplate.php";
-    private String GET_SERIALNOS_URL = "http://jigsawserverpink.com/admin/getSerial.php";
+    private String POST_SUBMIT_ORDER_URL = "http://jigsawserverpink.com/admin/addOrder.php";
+    private String POST_SUBMIT_ORDER_IMAGES_URL = "http://jigsawserverpink.com/admin/updateOrderImage.php";
 
     private ArrayList<CategoryEquipmentModel> categoryEquipmentModels;
     private ArrayList<Object> categoriesList = new ArrayList<>();
-
-    private ArrayList<SerialNoModel> serialNoModels;
+    private ArrayList<Component> componentsForTemplateSelected;
 
     ArrayList<Component> equipment;
     private CustomTemplateSpinnerAdapter mAdapter;
@@ -77,7 +83,7 @@ public class OldRecordActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_new_record);
+        setContentView(R.layout.activity_old_record);
 
         complexPreferences = ComplexPreferences.getComplexPreferences(OldRecordActivity.this, "saved-record", 0);
         savedOrder = complexPreferences.getObject("saved-record", Order.class);
@@ -106,10 +112,10 @@ public class OldRecordActivity extends AppCompatActivity {
     private void init() {
 
         txtOrderDate = (TextView) findViewById(R.id.txtOrderDate);
-
+        txtSerialNo = (TextView) findViewById(R.id.txtSerialNo);
         txtSubmit = (TextView) findViewById(R.id.txtSubmit);
-        TextView txtSave = (TextView) findViewById(R.id.txtSave);
-        txtSave.setVisibility(View.GONE);
+        TextView txtSubmit = (TextView) findViewById(R.id.txtSubmit);
+        txtSubmit.setVisibility(View.GONE);
         View line = findViewById(R.id.line);
         line.setVisibility(View.GONE);
 
@@ -128,21 +134,8 @@ public class OldRecordActivity extends AppCompatActivity {
         categories = new ArrayList<>();
 
         spCategories = (Spinner) findViewById(R.id.spCategories);
-        spCatSerialNo= (Spinner) findViewById(R.id.spCatSerialNo);
 
         getTemplates();
-        getSerialNos();
-
-        /*catSerialNos = new ArrayList<>();
-        catSerialNos.add("JSW20091517-01");
-        catSerialNos.add("JSW20091517-02");
-        catSerialNos.add("JSW20091517-03");
-
-        adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown, catSerialNos);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCatSerialNo.setAdapter(adapter);
-*/
-
 
         txtSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,28 +146,48 @@ public class OldRecordActivity extends AppCompatActivity {
             }
         });
 
-        /*spCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if( !isFirstTime) {
-                    if (spCategories.getItemAtPosition(i) != null) {
-                        String templateId = ((TemplateModel) mAdapter.getItem(i)).getTemplateId();
-                        componentsForTemplateSelected = new ArrayList<Component>();
-                        for (int c = 0; c < equipment.size(); c++) {
-                            if (equipment.get(c).getCategoryId().equals(templateId)) {
-                                componentsForTemplateSelected.add(equipment.get(c));
-                            }
+                if (spCategories.getItemAtPosition(i) != null) {
+                    String templateId = ((TemplateModel) mAdapter.getItem(i)).getTemplateId();
+                    componentsForTemplateSelected = new ArrayList<Component>();
+                    for (int c = 0; c < equipment.size(); c++) {
+                        if (equipment.get(c).getCategoryId().equals(templateId)) {
+                            componentsForTemplateSelected.add(equipment.get(c));
                         }
-                        addImageLayout(componentsForTemplateSelected);
                     }
+
+                    addImageLayout(componentsForTemplateSelected);
                 }
+
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        });*/
+        });
+
+        txtSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                if (spCategories.getSelectedItem().toString().trim().equals("Select Trolley Category")) {
+                    Snackbar snack = Snackbar.make(spCategories, "Please Select a Category!", Snackbar.LENGTH_SHORT);
+                    snack.show();
+                } else {
+                    newOrder = new Order();
+                    newOrder.setOrderDate(txtOrderDate.getText().toString().trim());
+                    newOrder.setCategory(((TemplateModel) spCategories.getSelectedItem()).getTemplateName());
+                    newOrder.setCatSerialNumber(txtSerialNo.getText().toString());
+                    newOrder.setComponents(getComponentsDetails());
+
+                    submitOrderPostCAll(newOrder);
+                }
+            }
+        });
 
     }
 
@@ -209,24 +222,11 @@ public class OldRecordActivity extends AppCompatActivity {
         return index;
     }
 
-    private int getSerialNoIndex(Spinner spinner, String myString) {
-        int index = 0;
-
-        for (int i=1;i<spinner.getCount(); i++){
-            SerialNoModel serialNoModel = (SerialNoModel) spinner.getItemAtPosition(i);
-            if ( serialNoModel.serialNo.equalsIgnoreCase(myString)){
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
-
     private void setSavedDetails() {
 
         if(savedOrder!=null) {
             spCategories.setSelection(getTemplateIndex(spCategories, savedOrder.getCategory()));
-            spCatSerialNo.setSelection(getSerialNoIndex(spCatSerialNo, savedOrder.getCatSerialNumber()));
+            txtSerialNo.setText(savedOrder.getCatSerialNumber());
             txtOrderDate.setText(savedOrder.getOrderDate());
             addImageLayout(savedOrder.getComponents());
         }
@@ -277,6 +277,28 @@ public class OldRecordActivity extends AppCompatActivity {
             }
     }
 
+    private ArrayList<Component> getComponentsDetails() {
+        ArrayList<Component> components = new ArrayList<>();
+        // int noOfComponets = linearComponentsParent.getChildCount();
+        if(componentsForTemplateSelected != null) {
+            for(int i=0; i<componentsForTemplateSelected.size(); i++) {
+                View child = linearComponentsParent.getChildAt(i);
+                String componentName = ((TextView) child.findViewById(R.id.txtComponent1)).getText().toString().trim();
+                String componentDetails = ((EditText) child.findViewById(R.id.edtComponent1)).getText().toString().trim();
+                ImageView componentImage = (ImageView) child.findViewById(R.id.imgComponent1);
+                String componentPhoto = "";
+                if (componentImage.getDrawable() != null) {
+                    if(getImage(componentImage) != null) {
+                        componentPhoto = Utility.returnBas64Image(getImage(componentImage));
+                    }
+                }
+                Component component = new Component(componentName, componentDetails, componentPhoto);
+                components.add(component);
+            }
+        }
+        return components;
+    }
+
 
     private void getTemplates() {
 
@@ -324,47 +346,141 @@ public class OldRecordActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void getSerialNos() {
+    private void submitOrderPostCAll(Order order) {
 
-        final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
-        circleDialog.setCancelable(true);
-        circleDialog.show();
+        try {
 
-        new CallWebService(GET_SERIALNOS_URL, CallWebService.TYPE_JSONOBJECT) {
+            JSONObject jsonObject = new JSONObject();
 
-            @Override
-            public void response(String response) {
+            jsonObject.put("o_date", order.getOrderDate());
+            jsonObject.put("trolley_catg_name", order.getCategory());
 
-                circleDialog.dismiss();
+            StringBuilder equipmentDetails = new StringBuilder();
+            final ArrayList<Component> components = order.getComponents();
 
-                Log.e("RESP serialNos_Details", response);
+            for(int i=0; i<components.size(); i++) {
+                Component component = components.get(i);
+                equipmentDetails.append("Equipment name: "+component.getComponentName()+" \n "+
+                        "Equipment serial no.: "+component.getComponentDetails()+" \n ,");
+            }
 
-                try {
-                    JSONObject msg = new JSONObject(response);
+            jsonObject.put("equipment_details", equipmentDetails);
+            jsonObject.put("adminName", "admin name");
+            jsonObject.put("adminEmail", "admin email");
+            jsonObject.put("serial_no", order.getCatSerialNumber());
 
-                    if (msg.getString("status").equals("1")) {
-                        JSONArray data= msg.getJSONArray("data");
+            Log.e("ORDER JSON : ", "" + jsonObject.toString());
 
-                        Type listType = new TypeToken<List<SerialNoModel>>() {
-                        }.getType();
 
-                        serialNoModels =  new GsonBuilder().create().fromJson(data.toString(), listType);
-                        Log.e("serialNoModels", serialNoModels.toString());
+            final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
+            circleDialog.setCancelable(true);
+            circleDialog.show();
 
-                        mSAdapter = new CustomSerialNoSpinnerAdapter(OldRecordActivity.this, serialNoModels,R.layout.spinner_dropdown, R.layout.spinner_layout );
-                        spCatSerialNo.setAdapter(mSAdapter);
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, POST_SUBMIT_ORDER_URL, jsonObject, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject msg) {
+                    circleDialog.dismiss();
+
+                    String response1 = msg.toString();
+                    Log.e("Resp ORDER: ", "" + response1);
+
+                    try {
+                        JSONObject response = new JSONObject(msg.toString());
+
+                        if (!response.getString("msg").equals("0")) {
+                            String generatedOrderID = response.getString("order_id");
+
+                            for(int i=0; i<components.size(); i++) {
+                                submitOrderImagesPostCall(generatedOrderID, components.get(i).getComponentPhoto());
+                            }
+
+                            Snackbar.make(txtSubmit, "Order Submitted Successfully.", Snackbar.LENGTH_LONG).show();
+                        } else {
+                            Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                        Log.e("EXCEPTION", e.toString());
                     }
-                }catch(JSONException jsonEx) {
-                    Log.e("JSON EXCEPTION: ", jsonEx.toString());
-                }
-            }
 
-            @Override
-            public void error(VolleyError error) {
-                Log.e("VOLLEY ERROR", error.toString());
-                circleDialog.dismiss();
-            }
-        }.start();
+
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                    Log.e("VOLLEY EXCEPTION", error.toString());
+                    circleDialog.dismiss();
+
+
+                }
+            });
+            MyApplication.getInstance().addToRequestQueue(req);
+
+        } catch (Exception ex) {
+            Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+            Log.e("JSON EXCEPTION", ex.toString());
+        }
+    }
+
+    private void submitOrderImagesPostCall(String orderid, String img) {
+
+        try {
+
+            JSONObject jsonObject = new JSONObject();
+
+            jsonObject.put("img", img);
+            jsonObject.put("order_id", orderid);
+
+            Log.e("ORDER_IMAGES JSON : ", "" + jsonObject.toString());
+
+
+            final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
+            circleDialog.setCancelable(true);
+            circleDialog.show();
+
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, POST_SUBMIT_ORDER_IMAGES_URL, jsonObject, new Response.Listener<JSONObject>() {
+
+                @Override
+                public void onResponse(JSONObject msg) {
+                    circleDialog.dismiss();
+
+                    String response1 = msg.toString();
+                    Log.e("Resp ORDER_IMAGES: ", "" + response1);
+
+                    try {
+                        JSONObject response = new JSONObject(msg.toString());
+
+                        if (!response.getString("msg").equals("0")) {
+                        } else {
+                            Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                        Log.e("EXCEPTION", e.toString());
+                    }
+
+
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                    Log.e("VOLLEY EXCEPTION", error.toString());
+                    circleDialog.dismiss();
+
+
+                }
+            });
+            MyApplication.getInstance().addToRequestQueue(req);
+
+        } catch (Exception ex) {
+            Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+            Log.e("JSON EXCEPTION", ex.toString());
+        }
     }
 
     private void setCategories() {
