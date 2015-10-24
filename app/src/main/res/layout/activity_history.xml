@@ -34,20 +34,29 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <LinearLayout
             android:id="@+id/linearComponents"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+        </LinearLayout>
 
 
+        <TextView
+            android:id="@+id/txtHistory"
+            android:textColor="@color/secondaryColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/STD_MARGIN"
+            android:textSize="@dimen/L_TEXT_SIZE"
+            android:text="No history found."/>
         </LinearLayout>
     </ScrollView>
-
-
-
-
-
-
-
 
 </RelativeLayout>

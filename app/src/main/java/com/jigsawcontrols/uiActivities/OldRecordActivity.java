@@ -32,6 +32,8 @@ import com.jigsawcontrols.R;
 import com.jigsawcontrols.adapters.CustomSerialNoSpinnerAdapter;
 import com.jigsawcontrols.adapters.CustomTemplateSpinnerAdapter;
 import com.jigsawcontrols.apiHelpers.CallWebService;
+import com.jigsawcontrols.apiHelpers.EnumType;
+import com.jigsawcontrols.apiHelpers.GetPostClass;
 import com.jigsawcontrols.apiHelpers.MyApplication;
 import com.jigsawcontrols.helpers.ComplexPreferences;
 import com.jigsawcontrols.helpers.Utility;
@@ -40,7 +42,10 @@ import com.jigsawcontrols.model.Component;
 import com.jigsawcontrols.model.Order;
 import com.jigsawcontrols.model.SerialNoModel;
 import com.jigsawcontrols.model.TemplateModel;
+import com.jigsawcontrols.model.UserProfile;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,6 +71,7 @@ public class OldRecordActivity extends AppCompatActivity {
     private Order newOrder;
     private int noOfComponents = 2;
     ComplexPreferences complexPreferences;
+    UserProfile profile;
 
     private String GET_TEMPLATES_URL = "http://jigsawserverpink.com/admin/getTemplate.php";
     private String POST_SUBMIT_ORDER_URL = "http://jigsawserverpink.com/admin/addOrder.php";
@@ -88,6 +94,8 @@ public class OldRecordActivity extends AppCompatActivity {
         complexPreferences = ComplexPreferences.getComplexPreferences(OldRecordActivity.this, "saved-record", 0);
         savedOrder = complexPreferences.getObject("saved-record", Order.class);
 
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(OldRecordActivity.this, "user_pref", 0);
+        profile = complexPreferences.getObject("current-user", UserProfile.class);
 
         if(savedOrder != null) {
             init();
@@ -348,84 +356,69 @@ public class OldRecordActivity extends AppCompatActivity {
 
     private void submitOrderPostCAll(Order order) {
 
-        try {
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(OldRecordActivity.this, "user_pref", 0);
+        UserProfile profile = complexPreferences.getObject("current-user", UserProfile.class);
 
-            JSONObject jsonObject = new JSONObject();
+        List<NameValuePair> pairs = new ArrayList<>();
 
-            jsonObject.put("o_date", order.getOrderDate());
-            jsonObject.put("trolley_catg_name", order.getCategory());
+        final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
+        circleDialog.setCancelable(true);
+        circleDialog.show();
 
-            StringBuilder equipmentDetails = new StringBuilder();
-            final ArrayList<Component> components = order.getComponents();
+        pairs.add(new BasicNameValuePair("o_date", order.getOrderDate()));
+        pairs.add(new BasicNameValuePair("trolley_catg_name", order.getCategory()));
 
-            for(int i=0; i<components.size(); i++) {
-                Component component = components.get(i);
-                equipmentDetails.append("Equipment name: "+component.getComponentName()+" \n "+
-                        "Equipment serial no.: "+component.getComponentDetails()+" \n ,");
+        StringBuilder equipmentDetails = new StringBuilder();
+        final ArrayList<Component> components = order.getComponents();
+
+        for(int i=0; i<components.size(); i++) {
+            Component component = components.get(i);
+            equipmentDetails.append("Equipment name: "+component.getComponentName()+" \n "+
+                    "Equipment serial no.: "+component.getComponentDetails()+" \n ,");
+        }
+
+        pairs.add(new BasicNameValuePair("equipment_details", equipmentDetails.toString()));
+        pairs.add(new BasicNameValuePair("adminName", profile.data.get(0).adminfname));
+        pairs.add(new BasicNameValuePair("adminEmail", profile.data.get(0).adminemail));
+        pairs.add(new BasicNameValuePair("serial_no", order.getCatSerialNumber()));
+
+
+        new GetPostClass(POST_SUBMIT_ORDER_URL, pairs, EnumType.POST) {
+
+            @Override
+            public void response(String msg) {
+                circleDialog.dismiss();
+
+                String response1 = msg.toString();
+                Log.e("Resp ORDER: ", "" + response1);
+
+                try {
+                    JSONObject response = new JSONObject(msg.toString());
+
+                    if ( !response.getString("msg").equals("0")) {
+                        String generatedOrderID = response.getString("order_id");
+
+                        for(int i=0; i<components.size(); i++) {
+                            submitOrderImagesPostCall(generatedOrderID, components.get(i).getComponentPhoto());
+                        }
+
+                        Snackbar.make(txtSubmit, "Order Submitted Successfully.", Snackbar.LENGTH_LONG).show();
+                    } else {
+                        Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                    }
+                } catch (Exception e) {
+                    Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                    Log.e("EXCEPTION", e.toString());
+                }
             }
 
-            jsonObject.put("equipment_details", equipmentDetails);
-            jsonObject.put("adminName", "admin name");
-            jsonObject.put("adminEmail", "admin email");
-            jsonObject.put("serial_no", order.getCatSerialNumber());
-
-            Log.e("ORDER JSON : ", "" + jsonObject.toString());
-
-
-            final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
-            circleDialog.setCancelable(true);
-            circleDialog.show();
-
-            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, POST_SUBMIT_ORDER_URL, jsonObject, new Response.Listener<JSONObject>() {
-
-                @Override
-                public void onResponse(JSONObject msg) {
-                    circleDialog.dismiss();
-
-                    String response1 = msg.toString();
-                    Log.e("Resp ORDER: ", "" + response1);
-
-                    try {
-                        JSONObject response = new JSONObject(msg.toString());
-
-                        if (!msg.getString("msg").equals("0")) {
-                            String generatedOrderID = msg.getString("order_id");
-
-                            for(int i=0; i<components.size(); i++) {
-                                submitOrderImagesPostCall(generatedOrderID, components.get(i).getComponentPhoto());
-                            }
-
-                            complexPreferences.clearObject();
-                            complexPreferences.commit();
-
-                            Snackbar.make(txtSubmit, "Order Submitted Successfully.", Snackbar.LENGTH_LONG).show();
-                        } else {
-                            Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
-                        }
-                    } catch (Exception e) {
-                        Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
-                        Log.e("EXCEPTION", e.toString());
-                    }
-
-
-                }
-            }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
-                    Log.e("VOLLEY EXCEPTION", error.toString());
-                    circleDialog.dismiss();
-
-
-                }
-            });
-            MyApplication.getInstance().addToRequestQueue(req);
-
-        } catch (Exception ex) {
-            Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
-            Log.e("JSON EXCEPTION", ex.toString());
-        }
+            @Override
+            public void error(String error) {
+                Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                Log.e("VOLLEY EXCEPTION", error.toString());
+                circleDialog.dismiss();
+            }
+        }.call();
     }
 
     private void submitOrderImagesPostCall(String orderid, String img) {

@@ -46,9 +46,10 @@ import java.util.List;
 
 public class HistoryActivity extends ActionBarActivity {
     private LinearLayout linearComponents;
-    private TextView imgBack;
+    private TextView txtHistory,imgBack;
     private final String HISTORY_POST_URL = "http://jigsawserverpink.com/admin/getHistory.php";
     private ArrayList<OrderHistoryModel> orderHistoryModels;
+
 
 
     @Override
@@ -62,6 +63,9 @@ public class HistoryActivity extends ActionBarActivity {
 
         linearComponents = (LinearLayout) findViewById(R.id.linearComponents);
         imgBack = (TextView) findViewById(R.id.imgBack);
+        txtHistory = (TextView) findViewById(R.id.txtHistory);
+        txtHistory.setVisibility(View.GONE);
+
 
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,10 +98,11 @@ public class HistoryActivity extends ActionBarActivity {
                 circleDialog.dismiss();
                 try {
                     JSONObject response = new JSONObject(msg.toString());
+                    JSONArray jarray = response.getJSONArray("data");
 
                     Log.e("Resp HISTORY: ", "" + msg);
 
-                    if ( response.getString("data") != null && !response.getString("data").equals("0")) {
+                    if (jarray.length()!=0) {
                         JSONArray data = response.getJSONArray("data");
                         Type listType = new TypeToken<List<OrderHistoryModel>>() {
                         }.getType();
@@ -108,7 +113,7 @@ public class HistoryActivity extends ActionBarActivity {
                         setHistory();
 
                     } else {
-                        Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
+                        txtHistory.setVisibility(View.VISIBLE);
                     }
                 } catch (Exception e) {
                     Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
