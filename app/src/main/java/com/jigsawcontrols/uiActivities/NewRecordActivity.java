@@ -490,62 +490,36 @@ public class NewRecordActivity extends AppCompatActivity {
 
     private boolean saveForLaterPostCall() {
 
-        try {
+        List<NameValuePair> pairs = new ArrayList<>();
+        pairs.add(new BasicNameValuePair("s_no", ((SerialNoModel) spCatSerialNo.getSelectedItem()).serialNo));
 
-            JSONObject jsonObject = new JSONObject();
-
-            jsonObject.put("s_no", ((SerialNoModel) spCatSerialNo.getSelectedItem()).serialNo);
-
-            Log.e("SAVE_LATER JSON : ", "" + jsonObject.toString());
 
 
             final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
             circleDialog.setCancelable(true);
             circleDialog.show();
 
-            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, POST_SAVE_FOR_LATER_URL, jsonObject, new Response.Listener<JSONObject>() {
 
-                @Override
-                public void onResponse(JSONObject msg) {
-                    circleDialog.dismiss();
+        new GetPostClass(POST_SAVE_FOR_LATER_URL,pairs,EnumType.POST){
 
-                    String response1 = msg.toString();
-                    Log.e("Resp SAVE_LATER: ", "" + response1);
+            @Override
+            public void response(String msg) {
+                circleDialog.dismiss();
 
-                    try {
-                        if (!msg.getString("msg").equals("0")) {
-                            isSerialNoSaved = true;
-                        } else {
-                            isSerialNoSaved = false;
-                            Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
-                        }
-                    } catch (Exception e) {
-                        isSerialNoSaved = false;
-                        Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
-                        Log.e("EXCEPTION", e.toString());
-                    }
+                String response1 = msg.toString();
+                Log.e("Resp SAVE_LATER: ", "" + response1);
 
+                isSerialNoSaved = true;
+            }
 
-                }
-            }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    isSerialNoSaved = false;
-                    Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
-                    Log.e("VOLLEY EXCEPTION", error.toString());
-                    circleDialog.dismiss();
-
-
-                }
-            });
-            MyApplication.getInstance().addToRequestQueue(req);
-
-        } catch (Exception ex) {
-            isSerialNoSaved = false;
-            Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
-            Log.e("JSON EXCEPTION", ex.toString());
-        }
+            @Override
+            public void error(String error) {
+                isSerialNoSaved = false;
+                Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
+                Log.e("VOLLEY EXCEPTION", error.toString());
+                circleDialog.dismiss();
+            }
+        }.call();
         return isSerialNoSaved;
     }
 
