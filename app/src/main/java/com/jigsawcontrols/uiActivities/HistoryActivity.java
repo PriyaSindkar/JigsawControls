@@ -29,8 +29,10 @@ import com.jigsawcontrols.R;
 import com.jigsawcontrols.apiHelpers.EnumType;
 import com.jigsawcontrols.apiHelpers.GetPostClass;
 import com.jigsawcontrols.apiHelpers.MyApplication;
+import com.jigsawcontrols.helpers.ComplexPreferences;
 import com.jigsawcontrols.model.CategoryEquipmentModel;
 import com.jigsawcontrols.model.OrderHistoryModel;
+import com.jigsawcontrols.model.UserProfile;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -74,8 +76,12 @@ public class HistoryActivity extends ActionBarActivity {
 
     private void getHistory() {
 
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(HistoryActivity.this, "user_pref", 0);
+        UserProfile profile = complexPreferences.getObject("current-user", UserProfile.class);
+
+
         List<NameValuePair> pairs = new ArrayList<>();
-        pairs.add(new BasicNameValuePair("email", "test@gmail.com"));
+        pairs.add(new BasicNameValuePair("email", profile.data.get(0).adminemail));
 
 
             final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);

@@ -19,10 +19,13 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.GsonBuilder;
 import com.jigsawcontrols.R;
 import com.jigsawcontrols.apiHelpers.EnumType;
 import com.jigsawcontrols.apiHelpers.GetPostClass;
 import com.jigsawcontrols.apiHelpers.MyApplication;
+import com.jigsawcontrols.helpers.ComplexPreferences;
+import com.jigsawcontrols.model.UserProfile;
 import com.jigsawcontrols.uiFragments.HomeFragment;
 
 import org.apache.http.NameValuePair;
@@ -88,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.e("Resp LOGIN: ", "" + response);
                     Log.e("Resp DATA: ", "" + data);
 
+
                     if (data.length()!=0) {
                         SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
                         SharedPreferences.Editor editor = preferences.edit();
@@ -105,10 +109,20 @@ public class LoginActivity extends AppCompatActivity {
                             finish();
 
                         } else {
-                            Intent intent = new Intent(LoginActivity.this, MyDrawerActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
+
+                            UserProfile profile = new GsonBuilder().create().fromJson(msg, UserProfile.class);
+                            ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(LoginActivity.this, "user_pref", 0);
+                            complexPreferences.putObject("current-user", profile);
+                            complexPreferences.commit();
+
+                            if(profile.data.get(0).isactive.equalsIgnoreCase("1")) {
+                                Intent intent = new Intent(LoginActivity.this, MyDrawerActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            }else{
+                                Snackbar.make(btnLogin, "Administrator has blocked you. \nPlease contact at info@jigsawcontrols.com", Snackbar.LENGTH_LONG).show();
+                            }
                         }
 
                     }else{
