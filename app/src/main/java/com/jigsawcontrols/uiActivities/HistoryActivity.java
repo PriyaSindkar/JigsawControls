@@ -26,10 +26,14 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.jigsawcontrols.R;
+import com.jigsawcontrols.apiHelpers.EnumType;
+import com.jigsawcontrols.apiHelpers.GetPostClass;
 import com.jigsawcontrols.apiHelpers.MyApplication;
 import com.jigsawcontrols.model.CategoryEquipmentModel;
 import com.jigsawcontrols.model.OrderHistoryModel;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -69,63 +73,52 @@ public class HistoryActivity extends ActionBarActivity {
 
 
     private void getHistory() {
-        try {
 
-            JSONObject jsonObject = new JSONObject();
-
-            jsonObject.put("email", "test@gmail.com");
-
-            Log.e("HISTORY JSON : ", "" + jsonObject.toString());
+        List<NameValuePair> pairs = new ArrayList<>();
+        pairs.add(new BasicNameValuePair("email", "test@gmail.com"));
 
 
             final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
             circleDialog.setCancelable(true);
             circleDialog.show();
 
-            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, HISTORY_POST_URL, jsonObject, new Response.Listener<JSONObject>() {
+        new GetPostClass(HISTORY_POST_URL, pairs, EnumType.POST) {
 
-                @Override
-                public void onResponse(JSONObject msg) {
-                    circleDialog.dismiss();
+            @Override
+            public void response(String msg) {
+                circleDialog.dismiss();
+                try {
+                    JSONObject response = new JSONObject(msg.toString());
 
-                    try {
-                       // JSONObject response = new JSONObject(msg.toString());
+                    Log.e("Resp HISTORY: ", "" + msg);
 
-                        Log.e("Resp HISTORY: ", "" + msg);
+                    if ( response.getString("data") != null && !response.getString("data").equals("0")) {
+                        JSONArray data = response.getJSONArray("data");
+                        Type listType = new TypeToken<List<OrderHistoryModel>>() {
+                        }.getType();
 
-                        if ( msg.getString("data") != null && !msg.getString("data").equals("0")) {
-                            JSONArray data = msg.getJSONArray("data");
-                            Type listType = new TypeToken<List<OrderHistoryModel>>() {
-                            }.getType();
+                        orderHistoryModels =  new GsonBuilder().create().fromJson(data.toString(), listType);
+                        Log.e("orderHistoryModels", orderHistoryModels.size()+"");
 
-                            orderHistoryModels =  new GsonBuilder().create().fromJson(data.toString(), listType);
-                            Log.e("orderHistoryModels", orderHistoryModels.size()+"");
+                        setHistory();
 
-                            setHistory();
-
-                        } else {
-                            Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
-                        }
-                    } catch (Exception e) {
-                         Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
-                        Log.e("EXCEPTION", e.toString());
+                    } else {
+                        Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
                     }
-                }
-            }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
+                } catch (Exception e) {
                     Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
-                    Log.e("VOLLEY EXCEPTION", error.toString());
-                    circleDialog.dismiss();
+                    Log.e("EXCEPTION", e.toString());
                 }
-            });
-            MyApplication.getInstance().addToRequestQueue(req);
+            }
 
-        } catch (Exception ex) {
-            Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
-            Log.e("JSON EXCEPTION", ex.toString());
-        }
+            @Override
+            public void error(String error) {
+                Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
+                Log.e("VOLLEY EXCEPTION", error.toString());
+            }
+        }.call();
+
+
     }
 
     private void setHistory() {
