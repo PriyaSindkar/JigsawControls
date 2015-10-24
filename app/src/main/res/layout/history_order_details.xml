@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/primaryColor"/>
+
+    <TextView
+        android:id="@+id/txtOrderId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Order Id: 1"
+        android:layout_margin="@dimen/STD_MARGIN"
+        android:textStyle="bold"
+        android:textColor="@color/primaryColor" />
+
+    <TextView
+        android:id="@+id/txtTrolleyCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Trolley Category: Category 1"
+        android:layout_margin="@dimen/STD_MARGIN"
+        android:textStyle="bold"
+        android:textColor="@color/primaryColor" />
+
+    <TextView
+        android:id="@+id/txtSerialNo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Serial No.: SERIAL_101"
+        android:layout_margin="@dimen/STD_MARGIN"
+        android:textStyle="bold"
+        android:textColor="@color/primaryColor" />
+
+    <TextView
+        android:id="@+id/txtOrderDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Order Date: 2015-10-10 11:30:00"
+        android:layout_margin="@dimen/STD_MARGIN"
+        android:textStyle="bold"
+        android:textColor="@color/primaryColor" />
+
+    <LinearLayout
+        android:id="@+id/linearEquipments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+    </LinearLayout>
+
+</LinearLayout>

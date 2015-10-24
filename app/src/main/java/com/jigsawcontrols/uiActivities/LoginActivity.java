@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.e("Resp LOGIN: ", "" + response);
                         Log.e("Resp DATA: ", "" + data);
 
-                        if ( msg.getString("data")!= null &&  msg.getString("data").equals("0")) {
+                       // if ( msg.getString("data")!= null &&  msg.getString("data").equals("0")) {
                             SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
                             SharedPreferences.Editor editor = preferences.edit();
                             editor.putBoolean("isUserLogin", true);
@@ -111,9 +111,9 @@ public class LoginActivity extends AppCompatActivity {
                                 finish();
                             }
 
-                        } else {
+                        /*} else {
                             Snackbar.make(btnLogin, "Username and password incorrect. Please try again.", Snackbar.LENGTH_LONG).show();
-                        }
+                        }*/
                     } catch (Exception e) {
                         Snackbar.make(btnLogin, "Login failed. Please try again.", Snackbar.LENGTH_LONG).show();
                         Log.e("EXCEPTION", e.toString());

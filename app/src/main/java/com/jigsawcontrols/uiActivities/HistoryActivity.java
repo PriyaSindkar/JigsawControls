@@ -8,10 +8,14 @@ import android.os.CountDownTimer;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -19,21 +23,26 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.jigsawcontrols.R;
 import com.jigsawcontrols.apiHelpers.MyApplication;
+import com.jigsawcontrols.model.CategoryEquipmentModel;
+import com.jigsawcontrols.model.OrderHistoryModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class HistoryActivity extends ActionBarActivity {
-    private Spinner spCatSerialNo;
-    private List<String> catSerialNos;
-    private ArrayAdapter<String> adapter;
+    private LinearLayout linearComponents;
+    private TextView imgBack;
     private final String HISTORY_POST_URL = "http://jigsawserverpink.com/admin/getHistory.php";
+    private ArrayList<OrderHistoryModel> orderHistoryModels;
 
 
     @Override
@@ -44,15 +53,16 @@ public class HistoryActivity extends ActionBarActivity {
 
 
         setContentView(R.layout.activity_history);
-        spCatSerialNo= (Spinner) findViewById(R.id.spCatSerialNo);
 
-        catSerialNos = new ArrayList<>();
-        catSerialNos.add("SERIAL_NO-101");
-        catSerialNos.add("SERIAL_NO-102");
+        linearComponents = (LinearLayout) findViewById(R.id.linearComponents);
+        imgBack = (TextView) findViewById(R.id.imgBack);
 
-        adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown, catSerialNos);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCatSerialNo.setAdapter(adapter);
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         getHistory();
     }
@@ -78,20 +88,26 @@ public class HistoryActivity extends ActionBarActivity {
                 public void onResponse(JSONObject msg) {
                     circleDialog.dismiss();
 
-
                     try {
-                        JSONObject response = new JSONObject(msg.toString());
-                        JSONArray data = response.getJSONArray("data");
-                        Log.e("Resp HISTORY: ", "" + response);
+                       // JSONObject response = new JSONObject(msg.toString());
 
-                        if (msg.getString("data") != null && msg.getString("data").equals("0")) {
+                        Log.e("Resp HISTORY: ", "" + msg);
 
+                        if ( msg.getString("data") != null && !msg.getString("data").equals("0")) {
+                            JSONArray data = msg.getJSONArray("data");
+                            Type listType = new TypeToken<List<OrderHistoryModel>>() {
+                            }.getType();
+
+                            orderHistoryModels =  new GsonBuilder().create().fromJson(data.toString(), listType);
+                            Log.e("orderHistoryModels", orderHistoryModels.size()+"");
+
+                            setHistory();
 
                         } else {
-                            Snackbar.make(findViewById(android.R.id.content), "Username and password incorrect. Please try again.", Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
                         }
                     } catch (Exception e) {
-                        // Snackbar.make(btnLogin, "Login failed. Please try again.", Snackbar.LENGTH_LONG).show();
+                         Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
                         Log.e("EXCEPTION", e.toString());
                     }
                 }
@@ -99,7 +115,7 @@ public class HistoryActivity extends ActionBarActivity {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Snackbar.make(findViewById(android.R.id.content), "Login failed. Please try again.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
                     Log.e("VOLLEY EXCEPTION", error.toString());
                     circleDialog.dismiss();
                 }
@@ -107,8 +123,51 @@ public class HistoryActivity extends ActionBarActivity {
             MyApplication.getInstance().addToRequestQueue(req);
 
         } catch (Exception ex) {
-            Snackbar.make(findViewById(android.R.id.content), "Login failed. Please try again.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
             Log.e("JSON EXCEPTION", ex.toString());
+        }
+    }
+
+    private void setHistory() {
+        //linearComponents.removeAllViews();
+
+        for(int i=0; i<orderHistoryModels.size(); i++) {
+            Log.e("order" , orderHistoryModels.get(i).toString());
+
+            LayoutInflater inflater = LayoutInflater.from(HistoryActivity.this);
+            View inflatedLayout = inflater.inflate(R.layout.history_order_details, null, false);
+
+            TextView txtOrderId = (TextView) inflatedLayout.findViewById(R.id.txtOrderId);
+            txtOrderId.setText("Order Id: "+orderHistoryModels.get(i).orderId);
+
+            TextView txtTrolleyCategory = (TextView) inflatedLayout.findViewById(R.id.txtTrolleyCategory);
+            txtTrolleyCategory.setText("Category Name: "+orderHistoryModels.get(i).trolleyCategoryName);
+            TextView txtSerialNo = (TextView) inflatedLayout.findViewById(R.id.txtSerialNo);
+            txtSerialNo.setText("Serial No.: "+orderHistoryModels.get(i).serialNo);
+            TextView txtOrderDate = (TextView) inflatedLayout.findViewById(R.id.txtOrderDate);
+            txtOrderDate.setText("Order Date: "+orderHistoryModels.get(i).orderDate);
+
+            LinearLayout linearEquipments = (LinearLayout) inflatedLayout.findViewById(R.id.linearEquipments);
+
+            String[] equipments = orderHistoryModels.get(i).equipmentDetails.split(",");
+
+            for(int j=0; j< equipments.length; j++) {
+                inflater = LayoutInflater.from(HistoryActivity.this);
+                View equipmentDetailsView = inflater.inflate(R.layout.equipment_details, null, false);
+                ImageView imgEquipment = (ImageView) equipmentDetailsView.findViewById(R.id.imgEquipment);
+                TextView txtEqipmentSerialNo = (TextView) equipmentDetailsView.findViewById(R.id.txtEqipmentSerialNo);
+
+              //  String[] details = equipments[j].split("\n");
+                txtEqipmentSerialNo.setText("Equipment Serial No.: " + equipments[j]);
+                TextView txtEqipmentDetails = (TextView) equipmentDetailsView.findViewById(R.id.txtEqipmentDetails);
+               // txtEqipmentDetails.setText("Equipment Serial No.: " + details[0]);
+                linearEquipments.addView(equipmentDetailsView);
+            }
+
+            if( !orderHistoryModels.get(i).orderId.equals("")) {
+
+                linearComponents.addView(inflatedLayout);
+            }
         }
     }
 
