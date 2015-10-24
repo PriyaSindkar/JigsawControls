@@ -23,6 +23,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.bumptech.glide.Glide;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.jigsawcontrols.R;
@@ -155,12 +156,16 @@ public class HistoryActivity extends ActionBarActivity {
             LinearLayout linearEquipments = (LinearLayout) inflatedLayout.findViewById(R.id.linearEquipments);
 
             String[] equipments = orderHistoryModels.get(i).equipmentDetails.split(",");
+            String[] equipmentsImages = orderHistoryModels.get(i).images.split(",");
+
 
             for(int j=0; j< equipments.length; j++) {
                 inflater = LayoutInflater.from(HistoryActivity.this);
                 View equipmentDetailsView = inflater.inflate(R.layout.equipment_details, null, false);
                 ImageView imgEquipment = (ImageView) equipmentDetailsView.findViewById(R.id.imgEquipment);
                 TextView txtEqipmentSerialNo = (TextView) equipmentDetailsView.findViewById(R.id.txtEqipmentSerialNo);
+
+                Glide.with(this).load("http://jigsawserverpink.com/admin/OrderImages/"+equipmentsImages).into(imgEquipment);
 
               //  String[] details = equipments[j].split("\n");
                 txtEqipmentSerialNo.setText(" " + equipments[j]);
