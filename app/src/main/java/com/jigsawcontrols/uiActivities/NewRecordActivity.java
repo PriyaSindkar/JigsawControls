@@ -551,6 +551,8 @@ public class NewRecordActivity extends AppCompatActivity {
 
     private void submitOrderPostCAll(Order order) {
 
+        Log.e("On call","POST");
+
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(NewRecordActivity.this, "user_pref", 0);
         UserProfile profile = complexPreferences.getObject("current-user", UserProfile.class);
 
@@ -593,6 +595,8 @@ public class NewRecordActivity extends AppCompatActivity {
                     if (!response.getString("msg").equals("0")) {
                         String generatedOrderID = response.getString("order_id");
 
+
+                        Log.e("### comp size",""+components.size());
                         for (int i = 0; i < components.size(); i++) {
                             submitOrderImagesPostCall(generatedOrderID, components.get(i).getComponentPhoto());
                         }
@@ -618,6 +622,8 @@ public class NewRecordActivity extends AppCompatActivity {
 
     private void submitOrderImagesPostCall(String orderid, String img) {
 
+
+
         List<NameValuePair> pairs = new ArrayList<>();
         pairs.add(new BasicNameValuePair("img", img));
         pairs.add(new BasicNameValuePair("order_id", orderid));
@@ -629,7 +635,7 @@ public class NewRecordActivity extends AppCompatActivity {
             circleDialog.show();
 
 
-        new GetPostClass(POST_SUBMIT_ORDER_URL,pairs,EnumType.POST){
+        new GetPostClass(POST_SUBMIT_ORDER_IMAGES_URL,pairs,EnumType.POST){
 
             @Override
             public void response(String msg) {

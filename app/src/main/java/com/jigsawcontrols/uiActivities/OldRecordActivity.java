@@ -423,6 +423,8 @@ public class OldRecordActivity extends AppCompatActivity {
 
     private void submitOrderImagesPostCall(String orderid, String img) {
 
+
+
         List<NameValuePair> pairs = new ArrayList<>();
         pairs.add(new BasicNameValuePair("img", img));
         pairs.add(new BasicNameValuePair("order_id", orderid));
@@ -434,7 +436,7 @@ public class OldRecordActivity extends AppCompatActivity {
         circleDialog.show();
 
 
-        new GetPostClass(POST_SUBMIT_ORDER_URL,pairs,EnumType.POST){
+        new GetPostClass(POST_SUBMIT_ORDER_IMAGES_URL,pairs,EnumType.POST){
 
             @Override
             public void response(String msg) {
