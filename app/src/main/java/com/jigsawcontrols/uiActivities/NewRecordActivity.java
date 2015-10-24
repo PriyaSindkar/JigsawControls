@@ -109,7 +109,7 @@ public class NewRecordActivity extends AppCompatActivity{
         SimpleDateFormat df = new SimpleDateFormat("dd/MMM/yyyy HH:mm");
         String formattedDate = df.format(c.getTime());
 
-        txtOrderDate.setText(formattedDate);
+        txtOrderDate.setText(formattedDate.toUpperCase());
 
 
 
@@ -138,7 +138,7 @@ public class NewRecordActivity extends AppCompatActivity{
 
                         Snackbar.make(view, "Order Saved For Later Use!", Snackbar.LENGTH_SHORT).show();
                     } else {
-                        Snackbar.make(view, "Oops!", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, "Order Cannot Be Saved.", Snackbar.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -505,14 +505,14 @@ public class NewRecordActivity extends AppCompatActivity{
                     Log.e("Resp SAVE_LATER: ", "" + response1);
 
                     try {
-                        JSONObject response = new JSONObject(msg.toString());
-
-                        if (!response.getString("msg").equals("0")) {
+                        if ( !msg.getString("msg").equals("0")) {
                             isSerialNoSaved = true;
                         } else {
+                            isSerialNoSaved = false;
                             Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
                         }
                     } catch (Exception e) {
+                        isSerialNoSaved = false;
                         Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
                         Log.e("EXCEPTION", e.toString());
                     }
@@ -523,6 +523,7 @@ public class NewRecordActivity extends AppCompatActivity{
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    isSerialNoSaved = false;
                     Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
                     Log.e("VOLLEY EXCEPTION", error.toString());
                     circleDialog.dismiss();
@@ -533,6 +534,7 @@ public class NewRecordActivity extends AppCompatActivity{
             MyApplication.getInstance().addToRequestQueue(req);
 
         } catch (Exception ex) {
+            isSerialNoSaved = false;
             Snackbar.make(txtSave, "Record Cannot Be Saved.", Snackbar.LENGTH_LONG).show();
             Log.e("JSON EXCEPTION", ex.toString());
         }
@@ -581,8 +583,8 @@ public class NewRecordActivity extends AppCompatActivity{
                     try {
                         JSONObject response = new JSONObject(msg.toString());
 
-                        if (!response.getString("msg").equals("0")) {
-                            String generatedOrderID = response.getString("order_id");
+                        if ( !msg.getString("msg").equals("0")) {
+                            String generatedOrderID = msg.getString("order_id");
 
                             for(int i=0; i<components.size(); i++) {
                                 submitOrderImagesPostCall(generatedOrderID, components.get(i).getComponentPhoto());
@@ -646,7 +648,7 @@ public class NewRecordActivity extends AppCompatActivity{
                     try {
                         JSONObject response = new JSONObject(msg.toString());
 
-                        if (!response.getString("msg").equals("0")) {
+                        if (!msg.getString("msg").equals("0")) {
                         } else {
                             Snackbar.make(txtSave, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
                         }

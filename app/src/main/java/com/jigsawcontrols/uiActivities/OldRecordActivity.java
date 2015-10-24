@@ -115,9 +115,9 @@ public class OldRecordActivity extends AppCompatActivity {
         txtSerialNo = (TextView) findViewById(R.id.txtSerialNo);
         txtSubmit = (TextView) findViewById(R.id.txtSubmit);
         TextView txtSubmit = (TextView) findViewById(R.id.txtSubmit);
-        txtSubmit.setVisibility(View.GONE);
+      /*  txtSubmit.setVisibility(View.GONE);
         View line = findViewById(R.id.line);
-        line.setVisibility(View.GONE);
+        line.setVisibility(View.GONE);*/
 
         imgBack = (TextView) findViewById(R.id.imgBack);
         imgBack.setText("Incomplete Order");
@@ -137,14 +137,14 @@ public class OldRecordActivity extends AppCompatActivity {
 
         getTemplates();
 
-        txtSubmit.setOnClickListener(new View.OnClickListener() {
+        /*txtSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 complexPreferences.clearObject();
                 complexPreferences.commit();
                 Snackbar.make(view, "Order Placed!", Snackbar.LENGTH_LONG).show();
             }
-        });
+        });*/
 
         spCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -388,12 +388,15 @@ public class OldRecordActivity extends AppCompatActivity {
                     try {
                         JSONObject response = new JSONObject(msg.toString());
 
-                        if (!response.getString("msg").equals("0")) {
-                            String generatedOrderID = response.getString("order_id");
+                        if (!msg.getString("msg").equals("0")) {
+                            String generatedOrderID = msg.getString("order_id");
 
                             for(int i=0; i<components.size(); i++) {
                                 submitOrderImagesPostCall(generatedOrderID, components.get(i).getComponentPhoto());
                             }
+
+                            complexPreferences.clearObject();
+                            complexPreferences.commit();
 
                             Snackbar.make(txtSubmit, "Order Submitted Successfully.", Snackbar.LENGTH_LONG).show();
                         } else {
@@ -453,7 +456,7 @@ public class OldRecordActivity extends AppCompatActivity {
                     try {
                         JSONObject response = new JSONObject(msg.toString());
 
-                        if (!response.getString("msg").equals("0")) {
+                        if (!msg.getString("msg").equals("0")) {
                         } else {
                             Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
                         }

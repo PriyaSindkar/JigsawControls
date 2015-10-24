@@ -23,6 +23,7 @@ import com.jigsawcontrols.R;
 import com.jigsawcontrols.apiHelpers.MyApplication;
 import com.jigsawcontrols.uiFragments.HomeFragment;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
@@ -59,87 +60,85 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginPostCall() {
-    try {
+        try {
 
-        JSONObject jsonObject = new JSONObject();
+            JSONObject jsonObject = new JSONObject();
 
-        jsonObject.put("email", edtUsername.getText().toString().trim());
-        jsonObject.put("pass", edtPassword.getText().toString().trim());
+            jsonObject.put("email", edtUsername.getText().toString().trim());
+            jsonObject.put("pass", edtPassword.getText().toString().trim());
 
-        Log.e("LOGIN JSON : ", "" + jsonObject.toString());
+            Log.e("LOGIN JSON : ", "" + jsonObject.toString());
 
 
-        final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
-        circleDialog.setCancelable(true);
-        circleDialog.show();
+            final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
+            circleDialog.setCancelable(true);
+            circleDialog.show();
 
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, LOGIN_URL, jsonObject, new Response.Listener<JSONObject>() {
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, LOGIN_URL, jsonObject, new Response.Listener<JSONObject>() {
 
-            @Override
-            public void onResponse(JSONObject msg) {
-                circleDialog.dismiss();
+                @Override
+                public void onResponse(JSONObject msg) {
+                    circleDialog.dismiss();
 
-                String response1 = msg.toString();
-                Log.e("Resp LOGIN: ", "" + response1);
 
-                try {
-                    JSONObject response = new JSONObject(msg.toString());
 
-                    if (response.getString("status").equals("1")) {
-                        SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putBoolean("isUserLogin", true);
-                        editor.putBoolean("isFirstTimeLogin", true);
-                        editor.commit();
+                    try {
+                        JSONObject response = new JSONObject(msg.toString());
+                        JSONArray data = response.getJSONArray("data");
+                        Log.e("Resp LOGIN: ", "" + response);
+                        Log.e("Resp DATA: ", "" + data);
 
-                        if(getIntent().getBooleanExtra("is_forgot_access_code",false) ) {
-                            preferences.edit().putString("quick_access_code", "123456").commit();
+                        if ( msg.getString("data")!= null &&  msg.getString("data").equals("0")) {
+                            SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putBoolean("isUserLogin", true);
+                            editor.putBoolean("isFirstTimeLogin", true);
+                            editor.commit();
 
-                            Intent intent = new Intent(LoginActivity.this, QuickAccessActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("is_access_code_default", true);
-                            startActivity(intent);
-                            finish();
+                            if(getIntent().getBooleanExtra("is_forgot_access_code",false) ) {
+                                preferences.edit().putString("quick_access_code", "123456").commit();
+
+                                Intent intent = new Intent(LoginActivity.this, QuickAccessActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtra("is_access_code_default", true);
+                                startActivity(intent);
+                                finish();
+
+                            } else {
+                                Intent intent = new Intent(LoginActivity.this, MyDrawerActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
 
                         } else {
-                            Intent intent = new Intent(LoginActivity.this, MyDrawerActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
+                            Snackbar.make(btnLogin, "Username and password incorrect. Please try again.", Snackbar.LENGTH_LONG).show();
                         }
-
-
-
-
-
-                    } else {
+                    } catch (Exception e) {
                         Snackbar.make(btnLogin, "Login failed. Please try again.", Snackbar.LENGTH_LONG).show();
+                        Log.e("EXCEPTION", e.toString());
                     }
-                } catch (Exception e) {
-                    Snackbar.make(btnLogin, "Login failed. Please try again.", Snackbar.LENGTH_LONG).show();
-                    Log.e("EXCEPTION", e.toString());
+
+
                 }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Snackbar.make(btnLogin, "Login failed. Please try again.", Snackbar.LENGTH_LONG).show();
+                    Log.e("VOLLEY EXCEPTION", error.toString());
+                    circleDialog.dismiss();
 
 
-            }
-        }, new Response.ErrorListener() {
+                }
+            });
+            MyApplication.getInstance().addToRequestQueue(req);
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Snackbar.make(btnLogin, "Login failed. Please try again.", Snackbar.LENGTH_LONG).show();
-                Log.e("VOLLEY EXCEPTION", error.toString());
-                circleDialog.dismiss();
-
-
-            }
-        });
-        MyApplication.getInstance().addToRequestQueue(req);
-
-    } catch (Exception ex) {
-        Snackbar.make(btnLogin, "Login failed. Please try again.", Snackbar.LENGTH_LONG).show();
-        Log.e("JSON EXCEPTION", ex.toString());
+        } catch (Exception ex) {
+            Snackbar.make(btnLogin, "Login failed. Please try again.", Snackbar.LENGTH_LONG).show();
+            Log.e("JSON EXCEPTION", ex.toString());
+        }
     }
-}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
