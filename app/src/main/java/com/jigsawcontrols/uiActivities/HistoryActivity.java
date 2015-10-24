@@ -163,10 +163,8 @@ public class HistoryActivity extends ActionBarActivity {
                 TextView txtEqipmentSerialNo = (TextView) equipmentDetailsView.findViewById(R.id.txtEqipmentSerialNo);
 
               //  String[] details = equipments[j].split("\n");
-                txtEqipmentSerialNo.setText("Equipment Serial No.: " + equipments[j]);
-                TextView txtEqipmentDetails = (TextView) equipmentDetailsView.findViewById(R.id.txtEqipmentDetails);
-               // txtEqipmentDetails.setText("Equipment Serial No.: " + details[0]);
-                linearEquipments.addView(equipmentDetailsView);
+                txtEqipmentSerialNo.setText(" " + equipments[j]);
+               linearEquipments.addView(equipmentDetailsView);
             }
 
             if( !orderHistoryModels.get(i).orderId.equals("")) {

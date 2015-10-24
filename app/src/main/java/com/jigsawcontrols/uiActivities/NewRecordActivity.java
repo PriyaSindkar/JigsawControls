@@ -56,13 +56,13 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-public class NewRecordActivity extends AppCompatActivity{
+public class NewRecordActivity extends AppCompatActivity {
 
     private Spinner spCategories, spCatSerialNo;
     private List<String> categories, catSerialNos;
     private ArrayAdapter<String> categoriesAdapter;
     private ArrayAdapter<String> serialNoAdapter;
-    private TextView txtOrderDate, imgBack,txtSubmit, txtSave;
+    private TextView txtOrderDate, imgBack, txtSubmit, txtSave;
     private ImageView imgComponent1, imgCapture1, image;
     private Bitmap thumbnail;
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
@@ -94,7 +94,6 @@ public class NewRecordActivity extends AppCompatActivity{
         init();
 
 
-
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,7 +114,6 @@ public class NewRecordActivity extends AppCompatActivity{
         String formattedDate = df.format(c.getTime());
 
         txtOrderDate.setText(formattedDate.toUpperCase());
-
 
 
         txtSave.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +175,7 @@ public class NewRecordActivity extends AppCompatActivity{
         categories = new ArrayList<>();
 
         spCategories = (Spinner) findViewById(R.id.spCategories);
-        spCatSerialNo= (Spinner) findViewById(R.id.spCatSerialNo);
+        spCatSerialNo = (Spinner) findViewById(R.id.spCatSerialNo);
 
         txtOrderDate = (TextView) findViewById(R.id.txtOrderDate);
         linearComponentsParent = (LinearLayout) findViewById(R.id.linearComponentsParent);
@@ -234,7 +232,6 @@ public class NewRecordActivity extends AppCompatActivity{
     }
 
 
-
     private void captureImage() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
@@ -267,7 +264,7 @@ public class NewRecordActivity extends AppCompatActivity{
 
         linearComponentsParent.removeAllViews();
 
-        for(int i=0; i<components.size(); i++) {
+        for (int i = 0; i < components.size(); i++) {
             LayoutInflater inflater = LayoutInflater.from(NewRecordActivity.this);
             View inflatedLayout = inflater.inflate(R.layout.component_layout, null, false);
             linearComponentsParent.addView(inflatedLayout);
@@ -278,21 +275,27 @@ public class NewRecordActivity extends AppCompatActivity{
             imgComponent1 = (ImageView) inflatedLayout.findViewById(R.id.imgComponent1);
             //image = imgComponent1;
 
-            ImageView removeImage = (ImageView)  inflatedLayout.findViewById(R.id.imgRemove);
-            removeImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    image.setImageResource(android.R.color.transparent);
-                }
-            });
+            ImageView removeImage = (ImageView) inflatedLayout.findViewById(R.id.imgRemove);
+
 
             imgCapture1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FrameLayout frame = (FrameLayout)((LinearLayout) view.getParent()).getChildAt(0);
-                    image = (ImageView)  frame.findViewById(R.id.imgComponent1);
+                    FrameLayout frame = (FrameLayout) ((LinearLayout) view.getParent()).getChildAt(0);
+                    image = (ImageView) frame.findViewById(R.id.imgComponent1);
                     captureImage();
                     //image.setImageBitmap(thumbnail);
+                }
+            });
+
+            removeImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        image.setImageResource(android.R.color.transparent);
+                    } catch (Exception e) {
+                        Log.e("#### EXC",""+e.toString());
+                    }
                 }
             });
         }
@@ -323,16 +326,16 @@ public class NewRecordActivity extends AppCompatActivity{
 
     private ArrayList<Component> getComponentsDetails() {
         ArrayList<Component> components = new ArrayList<>();
-       // int noOfComponets = linearComponentsParent.getChildCount();
-        if(componentsForTemplateSelected != null) {
-            for(int i=0; i<componentsForTemplateSelected.size(); i++) {
+        // int noOfComponets = linearComponentsParent.getChildCount();
+        if (componentsForTemplateSelected != null) {
+            for (int i = 0; i < componentsForTemplateSelected.size(); i++) {
                 View child = linearComponentsParent.getChildAt(i);
                 String componentName = ((TextView) child.findViewById(R.id.txtComponent1)).getText().toString().trim();
                 String componentDetails = ((EditText) child.findViewById(R.id.edtComponent1)).getText().toString().trim();
                 ImageView componentImage = (ImageView) child.findViewById(R.id.imgComponent1);
                 String componentPhoto = "";
                 if (componentImage.getDrawable() != null) {
-                    if(getImage(componentImage) != null) {
+                    if (getImage(componentImage) != null) {
                         componentPhoto = Utility.returnBas64Image(getImage(componentImage));
                     }
                 }
@@ -345,8 +348,8 @@ public class NewRecordActivity extends AppCompatActivity{
 
     public Bitmap getImage(ImageView ivImage) {
         Bitmap bitmap;
-        if(ivImage.getDrawable() instanceof BitmapDrawable) {
-            bitmap  = ((BitmapDrawable) ivImage.getDrawable()).getBitmap();
+        if (ivImage.getDrawable() instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) ivImage.getDrawable()).getBitmap();
         } else {
             bitmap = null;
         }
@@ -375,9 +378,9 @@ public class NewRecordActivity extends AppCompatActivity{
                     if (msg.getString("status").equals("1")) {
                         //Log.e("info", info.toString());
 
-                      //  JSONObject mainJSONObject = new JSONObject(info.toString());
+                        //  JSONObject mainJSONObject = new JSONObject(info.toString());
                         // get category JSONObject from mainJSONObj
-                        JSONObject infoJSONObj= msg.getJSONObject("info");
+                        JSONObject infoJSONObj = msg.getJSONObject("info");
 
                         // get all keys from categoryJSONObj
 
@@ -388,7 +391,7 @@ public class NewRecordActivity extends AppCompatActivity{
                             Type listType = new TypeToken<List<CategoryEquipmentModel>>() {
                             }.getType();
 
-                            categoryEquipmentModels =  new GsonBuilder().create().fromJson(infoJSONObj.optString(key).toString(), listType);
+                            categoryEquipmentModels = new GsonBuilder().create().fromJson(infoJSONObj.optString(key).toString(), listType);
                             Log.e("categoryEquipmentModels", categoryEquipmentModels.toString());
                             categoriesList.add(categoryEquipmentModels);
 
@@ -405,7 +408,7 @@ public class NewRecordActivity extends AppCompatActivity{
 
 */
                     }
-                }catch(JSONException jsonEx) {
+                } catch (JSONException jsonEx) {
                     Log.e("JSON EXCEPTION: ", jsonEx.toString());
                 }
             }
@@ -437,18 +440,18 @@ public class NewRecordActivity extends AppCompatActivity{
                     JSONObject msg = new JSONObject(response);
 
                     if (msg.getString("status").equals("1")) {
-                        JSONArray data= msg.getJSONArray("data");
+                        JSONArray data = msg.getJSONArray("data");
 
                         Type listType = new TypeToken<List<SerialNoModel>>() {
                         }.getType();
 
-                        serialNoModels =  new GsonBuilder().create().fromJson(data.toString(), listType);
+                        serialNoModels = new GsonBuilder().create().fromJson(data.toString(), listType);
                         Log.e("serialNoModels", serialNoModels.toString());
 
-                        mSAdapter = new CustomSerialNoSpinnerAdapter(NewRecordActivity.this, serialNoModels,R.layout.spinner_dropdown, R.layout.spinner_layout );
+                        mSAdapter = new CustomSerialNoSpinnerAdapter(NewRecordActivity.this, serialNoModels, R.layout.spinner_dropdown, R.layout.spinner_layout);
                         spCatSerialNo.setAdapter(mSAdapter);
                     }
-                }catch(JSONException jsonEx) {
+                } catch (JSONException jsonEx) {
                     Log.e("JSON EXCEPTION: ", jsonEx.toString());
                 }
             }
@@ -465,21 +468,21 @@ public class NewRecordActivity extends AppCompatActivity{
         ArrayList<TemplateModel> templates = new ArrayList<>();
         categories.clear();
         equipment = new ArrayList<>();
-        for(int i=0; i<categoriesList.size(); i++) {
+        for (int i = 0; i < categoriesList.size(); i++) {
             ArrayList<CategoryEquipmentModel> list = (ArrayList<CategoryEquipmentModel>) categoriesList.get(i);
-            TemplateModel template =  new TemplateModel(list.get(0).categoryId, list.get(0).categoryName);
+            TemplateModel template = new TemplateModel(list.get(0).categoryId, list.get(0).categoryName);
             templates.add(template);
 
             categories.add(list.get(0).categoryName);
-            for(int j=0; j<list.size(); j++) {
-                Component component = new Component( );
+            for (int j = 0; j < list.size(); j++) {
+                Component component = new Component();
                 component.setCategoryId(list.get(j).categoryId);
                 component.setComponentName(list.get(j).equipmentName);
                 component.setComponentDetails("");
                 equipment.add(component);
             }
         }
-        mAdapter = new CustomTemplateSpinnerAdapter(NewRecordActivity.this, templates,R.layout.spinner_dropdown, R.layout.spinner_layout );
+        mAdapter = new CustomTemplateSpinnerAdapter(NewRecordActivity.this, templates, R.layout.spinner_dropdown, R.layout.spinner_layout);
         spCategories.setAdapter(mAdapter);
 
         Log.e("equipment", equipment.toString());
@@ -491,7 +494,7 @@ public class NewRecordActivity extends AppCompatActivity{
 
             JSONObject jsonObject = new JSONObject();
 
-            jsonObject.put("s_no", ((SerialNoModel)spCatSerialNo.getSelectedItem()).serialNo);
+            jsonObject.put("s_no", ((SerialNoModel) spCatSerialNo.getSelectedItem()).serialNo);
 
             Log.e("SAVE_LATER JSON : ", "" + jsonObject.toString());
 
@@ -510,7 +513,7 @@ public class NewRecordActivity extends AppCompatActivity{
                     Log.e("Resp SAVE_LATER: ", "" + response1);
 
                     try {
-                        if ( !msg.getString("msg").equals("0")) {
+                        if (!msg.getString("msg").equals("0")) {
                             isSerialNoSaved = true;
                         } else {
                             isSerialNoSaved = false;
@@ -563,10 +566,10 @@ public class NewRecordActivity extends AppCompatActivity{
         StringBuilder equipmentDetails = new StringBuilder();
         final ArrayList<Component> components = order.getComponents();
 
-        for(int i=0; i<components.size(); i++) {
+        for (int i = 0; i < components.size(); i++) {
             Component component = components.get(i);
-            equipmentDetails.append("Equipment name: "+component.getComponentName()+" \n "+
-                    "Equipment serial no.: "+component.getComponentDetails()+" \n ,");
+            equipmentDetails.append("Equipment name: " + component.getComponentName() + " \n " +
+                    "Equipment serial no.: " + component.getComponentDetails() + " \n ,");
         }
 
         pairs.add(new BasicNameValuePair("equipment_details", equipmentDetails.toString()));
@@ -587,10 +590,10 @@ public class NewRecordActivity extends AppCompatActivity{
                 try {
                     JSONObject response = new JSONObject(msg.toString());
 
-                    if ( !response.getString("msg").equals("0")) {
+                    if (!response.getString("msg").equals("0")) {
                         String generatedOrderID = response.getString("order_id");
 
-                        for(int i=0; i<components.size(); i++) {
+                        for (int i = 0; i < components.size(); i++) {
                             submitOrderImagesPostCall(generatedOrderID, components.get(i).getComponentPhoto());
                         }
 
@@ -670,7 +673,6 @@ public class NewRecordActivity extends AppCompatActivity{
             Log.e("JSON EXCEPTION", ex.toString());
         }
     }
-
 
 
     // end of main class

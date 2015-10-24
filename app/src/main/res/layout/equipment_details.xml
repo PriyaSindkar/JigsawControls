@@ -27,12 +27,7 @@
             android:text="Equipment Serial No."
             android:textColor="@color/primaryColor" />
 
-        <TextView
-            android:id="@+id/txtEqipmentDetails"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Equipment Details"
-            android:textColor="@color/primaryColor" />
+
     </LinearLayout>
 
 </LinearLayout>
