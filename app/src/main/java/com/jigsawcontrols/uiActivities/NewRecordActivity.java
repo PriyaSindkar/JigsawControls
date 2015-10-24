@@ -134,15 +134,9 @@ public class NewRecordActivity extends AppCompatActivity {
                     newOrder.setCatSerialNumber(((SerialNoModel) spCatSerialNo.getSelectedItem()).serialNo);
                     newOrder.setComponents(getComponentsDetails());
 
-                    if (saveForLaterPostCall()) {
-                        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(NewRecordActivity.this, "saved-record", 0);
-                        complexPreferences.putObject("saved-record", newOrder);
-                        complexPreferences.commit();
+                    saveForLaterPostCall();
 
-                        Snackbar.make(view, "Order Saved For Later Use!", Snackbar.LENGTH_SHORT).show();
-                    } else {
-                        Snackbar.make(view, "Order Cannot Be Saved.", Snackbar.LENGTH_SHORT).show();
-                    }
+
                 }
             }
         });
@@ -488,7 +482,7 @@ public class NewRecordActivity extends AppCompatActivity {
         Log.e("equipment", equipment.toString());
     }
 
-    private boolean saveForLaterPostCall() {
+    private void saveForLaterPostCall() {
 
         List<NameValuePair> pairs = new ArrayList<>();
         pairs.add(new BasicNameValuePair("s_no", ((SerialNoModel) spCatSerialNo.getSelectedItem()).serialNo));
@@ -509,7 +503,13 @@ public class NewRecordActivity extends AppCompatActivity {
                 String response1 = msg.toString();
                 Log.e("Resp SAVE_LATER: ", "" + response1);
 
-                isSerialNoSaved = true;
+                ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(NewRecordActivity.this, "saved-record", 0);
+                complexPreferences.putObject("saved-record", newOrder);
+                complexPreferences.commit();
+
+                Snackbar.make(txtSave, "Order Saved For Later Use!", Snackbar.LENGTH_SHORT).show();
+
+                finish();
             }
 
             @Override
@@ -520,7 +520,7 @@ public class NewRecordActivity extends AppCompatActivity {
                 circleDialog.dismiss();
             }
         }.call();
-        return isSerialNoSaved;
+
     }
 
     private void submitOrderPostCAll(Order order) {
