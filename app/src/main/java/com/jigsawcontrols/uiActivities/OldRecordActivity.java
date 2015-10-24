@@ -423,60 +423,50 @@ public class OldRecordActivity extends AppCompatActivity {
 
     private void submitOrderImagesPostCall(String orderid, String img) {
 
-        try {
-
-            JSONObject jsonObject = new JSONObject();
-
-            jsonObject.put("img", img);
-            jsonObject.put("order_id", orderid);
-
-            Log.e("ORDER_IMAGES JSON : ", "" + jsonObject.toString());
+        List<NameValuePair> pairs = new ArrayList<>();
+        pairs.add(new BasicNameValuePair("img", img));
+        pairs.add(new BasicNameValuePair("order_id", orderid));
 
 
-            final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
-            circleDialog.setCancelable(true);
-            circleDialog.show();
 
-            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, POST_SUBMIT_ORDER_IMAGES_URL, jsonObject, new Response.Listener<JSONObject>() {
+        final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
+        circleDialog.setCancelable(true);
+        circleDialog.show();
 
-                @Override
-                public void onResponse(JSONObject msg) {
-                    circleDialog.dismiss();
 
-                    String response1 = msg.toString();
-                    Log.e("Resp ORDER_IMAGES: ", "" + response1);
+        new GetPostClass(POST_SUBMIT_ORDER_URL,pairs,EnumType.POST){
 
-                    try {
-                        JSONObject response = new JSONObject(msg.toString());
+            @Override
+            public void response(String msg) {
+                circleDialog.dismiss();
 
-                        if (!msg.getString("msg").equals("0")) {
-                        } else {
-                            Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
-                        }
-                    } catch (Exception e) {
+                String response1 = msg.toString();
+                Log.e("Resp ORDER_IMAGES: ", "" + response1);
+
+                try {
+                    JSONObject response = new JSONObject(msg.toString());
+
+                    if (!response.getString("msg").equals("0")) {
+                    } else {
                         Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
-                        Log.e("EXCEPTION", e.toString());
                     }
-
-
-                }
-            }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
+                } catch (Exception e) {
                     Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
-                    Log.e("VOLLEY EXCEPTION", error.toString());
-                    circleDialog.dismiss();
-
-
+                    Log.e("EXCEPTION", e.toString());
                 }
-            });
-            MyApplication.getInstance().addToRequestQueue(req);
 
-        } catch (Exception ex) {
-            Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
-            Log.e("JSON EXCEPTION", ex.toString());
-        }
+
+                finish();
+
+            }
+
+            @Override
+            public void error(String error) {
+                Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
+                Log.e("VOLLEY EXCEPTION", error.toString());
+                circleDialog.dismiss();
+            }
+        }.call();
     }
 
     private void setCategories() {
