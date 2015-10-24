@@ -83,10 +83,9 @@ public class HistoryActivity extends ActionBarActivity {
         List<NameValuePair> pairs = new ArrayList<>();
         pairs.add(new BasicNameValuePair("email", profile.data.get(0).adminemail));
 
-
-            final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
-            circleDialog.setCancelable(true);
-            circleDialog.show();
+        final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
+        circleDialog.setCancelable(true);
+        circleDialog.show();
 
         new GetPostClass(HISTORY_POST_URL, pairs, EnumType.POST) {
 
@@ -119,6 +118,8 @@ public class HistoryActivity extends ActionBarActivity {
 
             @Override
             public void error(String error) {
+
+                circleDialog.dismiss();
                 Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch History.", Snackbar.LENGTH_LONG).show();
                 Log.e("VOLLEY EXCEPTION", error.toString());
             }

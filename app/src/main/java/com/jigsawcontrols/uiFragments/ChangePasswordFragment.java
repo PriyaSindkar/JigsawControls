@@ -21,20 +21,29 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.jigsawcontrols.R;
+import com.jigsawcontrols.apiHelpers.EnumType;
+import com.jigsawcontrols.apiHelpers.GetPostClass;
 import com.jigsawcontrols.apiHelpers.MyApplication;
+import com.jigsawcontrols.helpers.ComplexPreferences;
+import com.jigsawcontrols.model.UserProfile;
 import com.jigsawcontrols.uiActivities.HistoryActivity;
 import com.jigsawcontrols.uiActivities.NewRecordActivity;
 import com.jigsawcontrols.uiActivities.OldRecordActivity;
 import com.jigsawcontrols.uiActivities.QuickAccessActivity;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChangePasswordFragment extends Fragment {
 
     private EditText edtEmail, edtPassword, edtConfirmPassword;
     private Button btnLogin;
     private final String CHANGE_PASSWORD_URL = "http://jigsawserverpink.com/admin/updateProfile.php";
-
+    UserProfile profile;
     public static ChangePasswordFragment newInstance() {
         ChangePasswordFragment f = new ChangePasswordFragment();
         return f;
@@ -62,6 +71,11 @@ public class ChangePasswordFragment extends Fragment {
         edtConfirmPassword = (EditText) view.findViewById(R.id.edtConfirmPassword);
 
 
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getActivity(), "user_pref", 0);
+        profile = complexPreferences.getObject("current-user", UserProfile.class);
+
+        edtEmail.setText(profile.data.get(0).adminemail);
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,70 +100,58 @@ public class ChangePasswordFragment extends Fragment {
 
 
     private void changePasswordPostCall() {
-        try {
-
-            JSONObject jsonObject = new JSONObject();
-
-            jsonObject.put("email", edtEmail.getText().toString().trim());
-            jsonObject.put("pass", edtPassword.getText().toString().trim());
-
-            Log.e("CHANGE_PASS JSON : ", "" + jsonObject.toString());
 
 
-            final ProgressDialog circleDialog = ProgressDialog.show(getActivity(), "Please wait", "Loading...", true);
-            circleDialog.setCancelable(true);
-            circleDialog.show();
 
-            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, CHANGE_PASSWORD_URL, jsonObject, new Response.Listener<JSONObject>() {
+        List<NameValuePair> pairs = new ArrayList<>();
+        pairs.add(new BasicNameValuePair("email", profile.data.get(0).adminemail));
+        pairs.add(new BasicNameValuePair("pass", edtPassword.getText().toString().trim()));
 
-                @Override
-                public void onResponse(JSONObject msg) {
-                    circleDialog.dismiss();
-
-                    String response1 = msg.toString();
-                    Log.e("Resp CHANGE_PASS: ", "" + response1);
-
-                    try {
-                        JSONObject response = new JSONObject(msg.toString());
-
-                        if (response.getString("status").equals("1")) {
-                            Snackbar.make(btnLogin, "Password changed successfully", Snackbar.LENGTH_LONG).show();
-
-                            FragmentManager manager = getActivity().getSupportFragmentManager();
-                            FragmentTransaction ft = manager.beginTransaction();
-
-                            ft.replace(R.id.frame, new HomeFragment(), "HOME");
-                            ft.addToBackStack(null);
-                            ft.commit();
+        final ProgressDialog circleDialog = ProgressDialog.show(getActivity(), "Please wait", "Loading...", true);
+        circleDialog.setCancelable(true);
+        circleDialog.show();
 
 
-                        } else {
-                            Snackbar.make(btnLogin, "Password cannot be changed. Please try again.", Snackbar.LENGTH_LONG).show();
-                        }
-                    } catch (Exception e) {
+        new GetPostClass(CHANGE_PASSWORD_URL, pairs, EnumType.POST) {
+
+            @Override
+            public void response(String msg) {
+                circleDialog.dismiss();
+
+                String response1 = msg.toString();
+                Log.e("Resp CHANGE_PASS: ", "" + response1);
+
+                try {
+                    JSONObject response = new JSONObject(msg.toString());
+
+                    if (response.getString("status").equals("1")) {
+                        Snackbar.make(btnLogin, "Password changed successfully", Snackbar.LENGTH_LONG).show();
+
+                        FragmentManager manager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction ft = manager.beginTransaction();
+
+                        ft.replace(R.id.frame, new HomeFragment(), "HOME");
+                        ft.addToBackStack(null);
+                        ft.commit();
+
+
+                    } else {
                         Snackbar.make(btnLogin, "Password cannot be changed. Please try again.", Snackbar.LENGTH_LONG).show();
-                        Log.e("EXCEPTION", e.toString());
                     }
-
-
-                }
-            }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
+                } catch (Exception e) {
                     Snackbar.make(btnLogin, "Password cannot be changed. Please try again.", Snackbar.LENGTH_LONG).show();
-                    Log.e("VOLLEY EXCEPTION", error.toString());
-                    circleDialog.dismiss();
-
-
+                    Log.e("EXCEPTION", e.toString());
                 }
-            });
-            MyApplication.getInstance().addToRequestQueue(req);
+            }
 
-        } catch (Exception ex) {
-            Snackbar.make(btnLogin, "Password cannot be changed. Please try again.", Snackbar.LENGTH_LONG).show();
-            Log.e("JSON EXCEPTION", ex.toString());
-        }
+            @Override
+            public void error(String error) {
+                Snackbar.make(btnLogin, "Password cannot be changed. Please try again.", Snackbar.LENGTH_LONG).show();
+                Log.e("VOLLEY EXCEPTION", error.toString());
+                circleDialog.dismiss();
+            }
+        }.call();
+
     }
 
 
