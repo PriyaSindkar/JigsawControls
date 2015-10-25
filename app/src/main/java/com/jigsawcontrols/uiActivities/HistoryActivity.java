@@ -151,12 +151,15 @@ public class HistoryActivity extends ActionBarActivity {
             TextView txtSerialNo = (TextView) inflatedLayout.findViewById(R.id.txtSerialNo);
             txtSerialNo.setText("Serial No.: "+orderHistoryModels.get(i).serialNo);
             TextView txtOrderDate = (TextView) inflatedLayout.findViewById(R.id.txtOrderDate);
-            txtOrderDate.setText("Order Date: "+orderHistoryModels.get(i).orderDate);
+            txtOrderDate.setText("Order Date: " + orderHistoryModels.get(i).orderDate);
 
             LinearLayout linearEquipments = (LinearLayout) inflatedLayout.findViewById(R.id.linearEquipments);
 
+
+
             String[] equipments = orderHistoryModels.get(i).equipmentDetails.split(",");
             String[] equipmentsImages = orderHistoryModels.get(i).images.split(",");
+
 
 
             for(int j=0; j< equipments.length; j++) {
@@ -165,7 +168,8 @@ public class HistoryActivity extends ActionBarActivity {
                 ImageView imgEquipment = (ImageView) equipmentDetailsView.findViewById(R.id.imgEquipment);
                 TextView txtEqipmentSerialNo = (TextView) equipmentDetailsView.findViewById(R.id.txtEqipmentSerialNo);
 
-                Glide.with(this).load("http://jigsawserverpink.com/admin/OrderImages/"+equipmentsImages).into(imgEquipment);
+                Log.e("IMAGEs",equipmentsImages[j] );
+                Glide.with(this).load("http://jigsawserverpink.com/admin/OrderImages/"+equipmentsImages[j].trim()).into(imgEquipment);
 
               //  String[] details = equipments[j].split("\n");
                 txtEqipmentSerialNo.setText(" " + equipments[j]);

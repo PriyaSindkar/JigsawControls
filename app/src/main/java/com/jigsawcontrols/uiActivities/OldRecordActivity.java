@@ -69,9 +69,10 @@ public class OldRecordActivity extends AppCompatActivity {
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private LinearLayout linearComponentsParent;
     private Order newOrder;
-    private int noOfComponents = 2;
+    private int noOfComponents;
     ComplexPreferences complexPreferences;
     UserProfile profile;
+    private boolean isFirstTime = true;
 
     private String GET_TEMPLATES_URL = "http://jigsawserverpink.com/admin/getTemplate.php";
     private String POST_SUBMIT_ORDER_URL = "http://jigsawserverpink.com/admin/addOrder.php";
@@ -155,19 +156,26 @@ public class OldRecordActivity extends AppCompatActivity {
         });*/
 
         spCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            int count=0;
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (spCategories.getItemAtPosition(i) != null) {
-                    String templateId = ((TemplateModel) mAdapter.getItem(i)).getTemplateId();
-                    componentsForTemplateSelected = new ArrayList<Component>();
-                    for (int c = 0; c < equipment.size(); c++) {
-                        if (equipment.get(c).getCategoryId().equals(templateId)) {
-                            componentsForTemplateSelected.add(equipment.get(c));
-                        }
-                    }
 
-                    addImageLayout(componentsForTemplateSelected);
+                if(count>1) {
+                    Log.e("TAG", "setOnItemSelectedListener");
+                    if (spCategories.getItemAtPosition(i) != null) {
+                        String templateId = ((TemplateModel) mAdapter.getItem(i)).getTemplateId();
+                        componentsForTemplateSelected = new ArrayList<Component>();
+                        for (int c = 0; c < equipment.size(); c++) {
+                            if (equipment.get(c).getCategoryId().equals(templateId)) {
+                                componentsForTemplateSelected.add(equipment.get(c));
+                            }
+                        }
+
+                     addImageLayout(componentsForTemplateSelected);
+                    noOfComponents = componentsForTemplateSelected.size();
+                    }
                 }
+                count++;
 
             }
 
@@ -233,6 +241,7 @@ public class OldRecordActivity extends AppCompatActivity {
     private void setSavedDetails() {
 
         if(savedOrder!=null) {
+            noOfComponents = savedOrder.getComponents().size();
             spCategories.setSelection(getTemplateIndex(spCategories, savedOrder.getCategory()));
             txtSerialNo.setText(savedOrder.getCatSerialNumber());
             txtOrderDate.setText(savedOrder.getOrderDate());
@@ -241,11 +250,12 @@ public class OldRecordActivity extends AppCompatActivity {
     }
 
     private void addImageLayout(ArrayList<Component> savedOrderComponents) {
+        Log.e("TAG", "IMAGE CALL");
             linearComponentsParent.removeAllViews();
+
             for(int i=0; i<savedOrderComponents.size(); i++) {
                 LayoutInflater inflater = LayoutInflater.from(OldRecordActivity.this);
                 View inflatedLayout = inflater.inflate(R.layout.component_layout, null, false);
-                linearComponentsParent.addView(inflatedLayout);
 
                 TextView txtComponent1 = (TextView) inflatedLayout.findViewById(R.id.txtComponent1);
                 txtComponent1.setText(savedOrderComponents.get(i).getComponentName());
@@ -282,27 +292,27 @@ public class OldRecordActivity extends AppCompatActivity {
                         captureImage();
                     }
                 });
+                linearComponentsParent.addView(inflatedLayout);
             }
     }
 
     private ArrayList<Component> getComponentsDetails() {
         ArrayList<Component> components = new ArrayList<>();
         // int noOfComponets = linearComponentsParent.getChildCount();
-        if(componentsForTemplateSelected != null) {
-            for(int i=0; i<componentsForTemplateSelected.size(); i++) {
-                View child = linearComponentsParent.getChildAt(i);
-                String componentName = ((TextView) child.findViewById(R.id.txtComponent1)).getText().toString().trim();
-                String componentDetails = ((EditText) child.findViewById(R.id.edtComponent1)).getText().toString().trim();
-                ImageView componentImage = (ImageView) child.findViewById(R.id.imgComponent1);
-                String componentPhoto = "";
-                if (componentImage.getDrawable() != null) {
-                    if(getImage(componentImage) != null) {
-                        componentPhoto = Utility.returnBas64Image(getImage(componentImage));
-                    }
+
+        for(int i=0; i< noOfComponents; i++) {
+            View child = linearComponentsParent.getChildAt(i);
+            String componentName = ((TextView) child.findViewById(R.id.txtComponent1)).getText().toString().trim();
+            String componentDetails = ((EditText) child.findViewById(R.id.edtComponent1)).getText().toString().trim();
+            ImageView componentImage = (ImageView) child.findViewById(R.id.imgComponent1);
+            String componentPhoto = "";
+            if (componentImage.getDrawable() != null) {
+                if(getImage(componentImage) != null) {
+                    componentPhoto = Utility.returnBas64Image(getImage(componentImage));
                 }
-                Component component = new Component(componentName, componentDetails, componentPhoto);
-                components.add(component);
             }
+            Component component = new Component(componentName, componentDetails, componentPhoto);
+            components.add(component);
         }
         return components;
     }
@@ -373,6 +383,8 @@ public class OldRecordActivity extends AppCompatActivity {
         StringBuilder equipmentDetails = new StringBuilder();
         final ArrayList<Component> components = order.getComponents();
 
+        Log.e("REQ components: ", "" + components.toString());
+
         for(int i=0; i<components.size(); i++) {
             Component component = components.get(i);
             equipmentDetails.append("Equipment name: "+component.getComponentName()+" \n "+
@@ -383,6 +395,8 @@ public class OldRecordActivity extends AppCompatActivity {
         pairs.add(new BasicNameValuePair("adminName", profile.data.get(0).adminfname));
         pairs.add(new BasicNameValuePair("adminEmail", profile.data.get(0).adminemail));
         pairs.add(new BasicNameValuePair("serial_no", order.getCatSerialNumber()));
+
+        Log.e("REQ ORDER: ", "" + pairs.toString());
 
 
         new GetPostClass(POST_SUBMIT_ORDER_URL, pairs, EnumType.POST) {
@@ -404,7 +418,13 @@ public class OldRecordActivity extends AppCompatActivity {
                             submitOrderImagesPostCall(generatedOrderID, components.get(i).getComponentPhoto());
                         }
 
+                        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(OldRecordActivity.this, "saved-record", 0);
+                        complexPreferences.clearObject();
+                        complexPreferences.commit();
+
                         Snackbar.make(txtSubmit, "Order Submitted Successfully.", Snackbar.LENGTH_LONG).show();
+
+                        finish();
                     } else {
                         Snackbar.make(txtSubmit, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
                     }
@@ -431,7 +451,7 @@ public class OldRecordActivity extends AppCompatActivity {
         pairs.add(new BasicNameValuePair("img", img));
         pairs.add(new BasicNameValuePair("order_id", orderid));
 
-
+        Log.e("REQ images: ", "" + pairs.toString());
 
         final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
         circleDialog.setCancelable(true);

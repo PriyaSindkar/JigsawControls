@@ -68,6 +68,7 @@
                         android:id="@+id/imgComponent1"
                         android:layout_width="@dimen/LOGO_SIZE"
                         android:layout_height="@dimen/LOGO_SIZE"
+                        android:padding="@dimen/STD_MARGIN"
                         android:scaleType="fitXY"/>
 
                         <ImageView

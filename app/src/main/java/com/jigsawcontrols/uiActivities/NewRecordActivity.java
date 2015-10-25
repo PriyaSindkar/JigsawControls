@@ -334,6 +334,8 @@ public class NewRecordActivity extends AppCompatActivity {
                     }
                 }
                 Component component = new Component(componentName, componentDetails, componentPhoto);
+                Log.e("component", component.getComponentDetails());
+                Log.e("component", component.getComponentPhoto());
                 components.add(component);
             }
         }
@@ -553,7 +555,6 @@ public class NewRecordActivity extends AppCompatActivity {
         pairs.add(new BasicNameValuePair("adminEmail", profile.data.get(0).adminemail));
         pairs.add(new BasicNameValuePair("serial_no", order.getCatSerialNumber()));
 
-
         new GetPostClass(POST_SUBMIT_ORDER_URL, pairs, EnumType.POST) {
 
             @Override
@@ -601,6 +602,7 @@ public class NewRecordActivity extends AppCompatActivity {
         List<NameValuePair> pairs = new ArrayList<>();
         pairs.add(new BasicNameValuePair("img", img));
         pairs.add(new BasicNameValuePair("order_id", orderid));
+
 
 
 
