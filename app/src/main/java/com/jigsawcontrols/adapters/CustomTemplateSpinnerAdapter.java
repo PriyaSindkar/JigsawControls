@@ -63,7 +63,7 @@ public class CustomTemplateSpinnerAdapter extends BaseAdapter implements Spinner
         TextView txt = (TextView)view.findViewById(R.id.txtSpinner);
         txt.setPadding(12,12,12,12);
         txt.setGravity(Gravity.CENTER_VERTICAL);
-        txt.setText(values.get(position).getTemplateName());
+        txt.setText(values.get(position).getSerialNumber());
         //txt.setTextColor(parseColor("#000000"));
 
         return view;
@@ -80,7 +80,7 @@ public class CustomTemplateSpinnerAdapter extends BaseAdapter implements Spinner
         TextView txt = (TextView)view.findViewById(R.id.spID);
         txt.setGravity(Gravity.CENTER_VERTICAL);
         txt.setPadding(12, 12, 12, 12);
-        txt.setText(values.get(position).getTemplateName());
+        txt.setText(values.get(position).getSerialNumber());
         return view;
     }
 }

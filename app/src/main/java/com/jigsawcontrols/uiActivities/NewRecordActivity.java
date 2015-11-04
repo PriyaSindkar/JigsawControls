@@ -36,6 +36,7 @@ import com.jigsawcontrols.apiHelpers.MyApplication;
 import com.jigsawcontrols.helpers.ComplexPreferences;
 import com.jigsawcontrols.helpers.Utility;
 import com.jigsawcontrols.model.CategoryEquipmentModel;
+import com.jigsawcontrols.model.CategoryEquipmentModel2;
 import com.jigsawcontrols.model.Component;
 import com.jigsawcontrols.model.Order;
 import com.jigsawcontrols.model.SerialNoModel;
@@ -58,11 +59,11 @@ import java.util.List;
 
 public class NewRecordActivity extends AppCompatActivity {
 
-    private Spinner spCategories, spCatSerialNo;
+    private Spinner spCategories;
     private List<String> categories, catSerialNos;
     private ArrayAdapter<String> categoriesAdapter;
     private ArrayAdapter<String> serialNoAdapter;
-    private TextView txtOrderDate, imgBack, txtSubmit, txtSave;
+    private TextView txtOrderDate, txtCatSerialNo,imgBack, txtSubmit, txtSave;
     private ImageView imgComponent1, imgCapture1, image;
     private Bitmap thumbnail;
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
@@ -71,12 +72,12 @@ public class NewRecordActivity extends AppCompatActivity {
     private boolean isSerialNoSaved = false;
 
     private String GET_TEMPLATES_URL = "http://jigsawserverpink.com/admin/getTemplate.php";
-    private String GET_SERIALNOS_URL = "http://jigsawserverpink.com/admin/getSerial.php";
+//    private String GET_SERIALNOS_URL = "http://jigsawserverpink.com/admin/getSerial.php";
     private String POST_SAVE_FOR_LATER_URL = "http://jigsawserverpink.com/admin/saveLaterOrder.php";
     private String POST_SUBMIT_ORDER_URL = "http://jigsawserverpink.com/admin/addOrder.php";
     private String POST_SUBMIT_ORDER_IMAGES_URL = "http://jigsawserverpink.com/admin/updateOrderImage.php";
 
-    private ArrayList<CategoryEquipmentModel> categoryEquipmentModels;
+    private ArrayList<CategoryEquipmentModel2> categoryEquipmentModels;
     private ArrayList<Object> categoriesList = new ArrayList<>();
 
     private ArrayList<SerialNoModel> serialNoModels;
@@ -121,17 +122,14 @@ public class NewRecordActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                if (spCategories.getSelectedItem().toString().trim().equals("Select Trolley Category")) {
-                    Snackbar snack = Snackbar.make(spCategories, "Please Select a Category!", Snackbar.LENGTH_SHORT);
+                if (spCategories.getSelectedItem().toString().trim().equals("Select Serial Number")) {
+                    Snackbar snack = Snackbar.make(spCategories, "Please Select Serial No!", Snackbar.LENGTH_SHORT);
                     snack.show();
-                } else if (spCatSerialNo.getSelectedItem().toString().trim().equals("Select Serial Number")) {
-                    Snackbar snack = Snackbar.make(spCatSerialNo, "Please Select Serial No!", Snackbar.LENGTH_SHORT);
-                    snack.show();
-                } else {
+                }  else {
                     newOrder = new Order();
                     newOrder.setOrderDate(txtOrderDate.getText().toString().trim());
                     newOrder.setCategory(((TemplateModel) spCategories.getSelectedItem()).getTemplateName());
-                    newOrder.setCatSerialNumber(((SerialNoModel) spCatSerialNo.getSelectedItem()).serialNo);
+                    newOrder.setCatSerialNumber(txtCatSerialNo.getText().toString().trim());
                     newOrder.setComponents(getComponentsDetails());
 
                     saveForLaterPostCall();
@@ -146,18 +144,16 @@ public class NewRecordActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                if (spCategories.getSelectedItem().toString().trim().equals("Select Trolley Category")) {
-                    Snackbar snack = Snackbar.make(spCategories, "Please Select a Category!", Snackbar.LENGTH_SHORT);
+                if (spCategories.getSelectedItem().toString().trim().equals("Select Serial Number")) {
+                    Snackbar snack = Snackbar.make(spCategories, "Please Select Serial No!", Snackbar.LENGTH_SHORT);
                     snack.show();
-                } else if (spCatSerialNo.getSelectedItem().toString().trim().equals("Select Serial Number")) {
-                    Snackbar snack = Snackbar.make(spCatSerialNo, "Please Select Serial No!", Snackbar.LENGTH_SHORT);
-                    snack.show();
-                } else {
+                }  else {
                     newOrder = new Order();
                     newOrder.setOrderDate(txtOrderDate.getText().toString().trim());
                     newOrder.setCategory(((TemplateModel) spCategories.getSelectedItem()).getTemplateName());
-                    newOrder.setCatSerialNumber(((SerialNoModel) spCatSerialNo.getSelectedItem()).serialNo);
+                    newOrder.setCatSerialNumber(txtCatSerialNo.getText().toString().trim());
                     newOrder.setComponents(getComponentsDetails());
+
 
                     submitOrderPostCAll(newOrder);
                 }
@@ -169,19 +165,18 @@ public class NewRecordActivity extends AppCompatActivity {
         categories = new ArrayList<>();
 
         spCategories = (Spinner) findViewById(R.id.spCategories);
-        spCatSerialNo = (Spinner) findViewById(R.id.spCatSerialNo);
 
         txtOrderDate = (TextView) findViewById(R.id.txtOrderDate);
         linearComponentsParent = (LinearLayout) findViewById(R.id.linearComponentsParent);
 
-
+        txtCatSerialNo= (TextView) findViewById(R.id.txtCatSerialNo);
         imgBack = (TextView) findViewById(R.id.imgBack);
 
         txtSubmit = (TextView) findViewById(R.id.txtSubmit);
         txtSave = (TextView) findViewById(R.id.txtSave);
 
         getTemplates();
-        getSerialNos();
+       // getSerialNos();
 
        /* catSerialNos = new ArrayList<>();
         catSerialNos.add("JSW20091517-01");
@@ -384,7 +379,7 @@ public class NewRecordActivity extends AppCompatActivity {
                         while (iterator.hasNext()) {
                             String key = iterator.next();
                             //Log.e("TAG", "key:" + key + "--Value::" + infoJSONObj.optString(key));
-                            Type listType = new TypeToken<List<CategoryEquipmentModel>>() {
+                            Type listType = new TypeToken<List<CategoryEquipmentModel2>>() {
                             }.getType();
 
                             categoryEquipmentModels = new GsonBuilder().create().fromJson(infoJSONObj.optString(key).toString(), listType);
@@ -395,14 +390,6 @@ public class NewRecordActivity extends AppCompatActivity {
                         Log.e("Final list", categoriesList.toString());
                         setCategories();
 
-                        /*Type listType = new TypeToken<List<CategoryModel>>() {
-                        }.getType();
-
-                        categoryItems = new GsonBuilder().create().fromJson(data.toString(), listType);
-                        //filterHomePageCouponList(couponList);
-
-
-*/
                     }
                 } catch (JSONException jsonEx) {
                     Log.e("JSON EXCEPTION: ", jsonEx.toString());
@@ -417,7 +404,7 @@ public class NewRecordActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void getSerialNos() {
+  /*  private void getSerialNos() {
 
         final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
         circleDialog.setCancelable(true);
@@ -460,20 +447,22 @@ public class NewRecordActivity extends AppCompatActivity {
         }.start();
     }
 
+    */
+
     private void setCategories() {
         ArrayList<TemplateModel> templates = new ArrayList<>();
         categories.clear();
         equipment = new ArrayList<>();
         for (int i = 0; i < categoriesList.size(); i++) {
-            ArrayList<CategoryEquipmentModel> list = (ArrayList<CategoryEquipmentModel>) categoriesList.get(i);
-            TemplateModel template = new TemplateModel(list.get(0).categoryId, list.get(0).categoryName);
+            ArrayList<CategoryEquipmentModel2> list = (ArrayList<CategoryEquipmentModel2>) categoriesList.get(i);
+            TemplateModel template = new TemplateModel(list.get(0).template_id, list.get(0).template_name,list.get(0).number);
             templates.add(template);
 
-            categories.add(list.get(0).categoryName);
+            categories.add(list.get(0).template_name);
             for (int j = 0; j < list.size(); j++) {
                 Component component = new Component();
-                component.setCategoryId(list.get(j).categoryId);
-                component.setComponentName(list.get(j).equipmentName);
+                component.setCategoryId(list.get(j).template_id);
+                component.setComponentName(list.get(j).equipment_name);
                 component.setComponentDetails("");
                 equipment.add(component);
             }
@@ -481,13 +470,14 @@ public class NewRecordActivity extends AppCompatActivity {
         mAdapter = new CustomTemplateSpinnerAdapter(NewRecordActivity.this, templates, R.layout.spinner_dropdown, R.layout.spinner_layout);
         spCategories.setAdapter(mAdapter);
 
+
         Log.e("equipment", equipment.toString());
     }
 
     private void saveForLaterPostCall() {
 
         List<NameValuePair> pairs = new ArrayList<>();
-        pairs.add(new BasicNameValuePair("s_no", ((SerialNoModel) spCatSerialNo.getSelectedItem()).serialNo));
+        pairs.add(new BasicNameValuePair("s_no",txtCatSerialNo.getText().toString().trim()));
 
 
 

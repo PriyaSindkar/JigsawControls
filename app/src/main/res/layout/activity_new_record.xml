@@ -53,22 +53,20 @@
             android:entries="@array/trolley_categories"
             app:ms_arrowColor="@color/primaryColor"
             app:ms_floatingLabelColor="@color/primaryColor"
-            app:ms_floatingLabelText="Select Trolley Category"
-            app:ms_hint="Select Trolley Category"
-            app:ms_arrowSize="16dp"
-            app:ms_multiline="true" />
-
-        <fr.ganfra.materialspinner.MaterialSpinner
-            android:id="@+id/spCatSerialNo"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            app:ms_arrowColor="@color/primaryColor"
-            app:ms_floatingLabelColor="@color/primaryColor"
             app:ms_floatingLabelText="Select Serial Number"
             app:ms_hint="Select Serial Number"
             app:ms_arrowSize="16dp"
             app:ms_multiline="true" />
 
+        <TextView
+            android:id="@+id/txtCatSerialNo"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#494949"
+            android:textSize="@dimen/L_TEXT_SIZE"
+            android:text="Template name"/>
 
 
     </LinearLayout>

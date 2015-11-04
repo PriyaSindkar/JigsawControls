@@ -499,7 +499,7 @@ public class OldRecordActivity extends AppCompatActivity {
         equipment = new ArrayList<>();
         for(int i=0; i<categoriesList.size(); i++) {
             ArrayList<CategoryEquipmentModel> list = (ArrayList<CategoryEquipmentModel>) categoriesList.get(i);
-            TemplateModel template =  new TemplateModel(list.get(0).categoryId, list.get(0).categoryName);
+            TemplateModel template =  new TemplateModel(list.get(0).categoryId, list.get(0).categoryName,"");
             templates.add(template);
 
             categories.add(list.get(0).categoryName);

@@ -6,13 +6,15 @@ package com.jigsawcontrols.model;
 public class TemplateModel {
     String templateId;
     String templateName;
+    String serialNumber;
 
     public TemplateModel() {
     }
 
-    public TemplateModel(String templateId, String templateName) {
+    public TemplateModel(String templateId, String templateName,String serialNumber) {
         this.templateId = templateId;
         this.templateName = templateName;
+        this.serialNumber = serialNumber;
     }
 
     public String getTemplateId() {
@@ -25,6 +27,14 @@ public class TemplateModel {
 
     public String getTemplateName() {
         return templateName;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
     }
 
     public void setTemplateName(String templateName) {
