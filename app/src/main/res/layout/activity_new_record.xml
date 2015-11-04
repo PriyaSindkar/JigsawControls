@@ -68,6 +68,12 @@
             android:textSize="@dimen/MM_TEXT_SIZE"
             android:text="Template name"/>
 
+        <EditText
+            android:hint="Enter notes"
+            android:id="@+id/ednotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
 
     </LinearLayout>
 

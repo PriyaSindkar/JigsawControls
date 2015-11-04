@@ -70,6 +70,7 @@ public class NewRecordActivity extends AppCompatActivity {
     private LinearLayout linearComponentsParent;
     private Order newOrder;
     private boolean isSerialNoSaved = false;
+    EditText ednotes;
 
     private String GET_TEMPLATES_URL = "http://jigsawserverpink.com/admin/getTemplate.php";
 //    private String GET_SERIALNOS_URL = "http://jigsawserverpink.com/admin/getSerial.php";
@@ -163,6 +164,8 @@ public class NewRecordActivity extends AppCompatActivity {
 
     private void init() {
         categories = new ArrayList<>();
+
+        ednotes = (EditText)findViewById(R.id.ednotes);
 
         spCategories = (Spinner) findViewById(R.id.spCategories);
 
