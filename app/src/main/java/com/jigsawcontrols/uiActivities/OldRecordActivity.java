@@ -38,6 +38,7 @@ import com.jigsawcontrols.apiHelpers.MyApplication;
 import com.jigsawcontrols.helpers.ComplexPreferences;
 import com.jigsawcontrols.helpers.Utility;
 import com.jigsawcontrols.model.CategoryEquipmentModel;
+import com.jigsawcontrols.model.CategoryEquipmentModel2;
 import com.jigsawcontrols.model.Component;
 import com.jigsawcontrols.model.Order;
 import com.jigsawcontrols.model.SerialNoModel;
@@ -78,7 +79,7 @@ public class OldRecordActivity extends AppCompatActivity {
     private String POST_SUBMIT_ORDER_URL = "http://jigsawserverpink.com/admin/addOrder.php";
     private String POST_SUBMIT_ORDER_IMAGES_URL = "http://jigsawserverpink.com/admin/updateOrderImage.php";
 
-    private ArrayList<CategoryEquipmentModel> categoryEquipmentModels;
+    private ArrayList<CategoryEquipmentModel2> categoryEquipmentModels;
     private ArrayList<Object> categoriesList = new ArrayList<>();
     private ArrayList<Component> componentsForTemplateSelected;
 
@@ -174,7 +175,7 @@ public class OldRecordActivity extends AppCompatActivity {
                         }
 
                      addImageLayout(componentsForTemplateSelected);
-                    noOfComponents = componentsForTemplateSelected.size();
+                     noOfComponents = componentsForTemplateSelected.size();
                     }
                 }
                 count++;
@@ -343,7 +344,7 @@ public class OldRecordActivity extends AppCompatActivity {
                         Iterator<String> iterator = infoJSONObj.keys();
                         while (iterator.hasNext()) {
                             String key = iterator.next();
-                            Type listType = new TypeToken<List<CategoryEquipmentModel>>() {
+                            Type listType = new TypeToken<List<CategoryEquipmentModel2>>() {
                             }.getType();
 
                             categoryEquipmentModels =  new GsonBuilder().create().fromJson(infoJSONObj.optString(key).toString(), listType);
@@ -501,15 +502,15 @@ public class OldRecordActivity extends AppCompatActivity {
         categories.clear();
         equipment = new ArrayList<>();
         for(int i=0; i<categoriesList.size(); i++) {
-            ArrayList<CategoryEquipmentModel> list = (ArrayList<CategoryEquipmentModel>) categoriesList.get(i);
-            TemplateModel template =  new TemplateModel(list.get(0).categoryId, list.get(0).categoryName,"");
+            ArrayList<CategoryEquipmentModel2> list = (ArrayList<CategoryEquipmentModel2>) categoriesList.get(i);
+            TemplateModel template = new TemplateModel(list.get(0).template_id, list.get(0).template_name,list.get(0).number);
             templates.add(template);
 
-            categories.add(list.get(0).categoryName);
-            for(int j=0; j<list.size(); j++) {
-                Component component = new Component( );
-                component.setCategoryId(list.get(j).categoryId);
-                component.setComponentName(list.get(j).equipmentName);
+            categories.add(list.get(0).template_name);
+            for (int j = 0; j < list.size(); j++) {
+                Component component = new Component();
+                component.setCategoryId(list.get(j).template_id);
+                component.setComponentName(list.get(j).equipment_name);
                 component.setComponentDetails("");
                 equipment.add(component);
             }

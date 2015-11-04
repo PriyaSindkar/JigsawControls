@@ -47,15 +47,14 @@
             android:text="Order Date and time"/>
 
         <fr.ganfra.materialspinner.MaterialSpinner
-            android:visibility="gone"
             android:id="@+id/spCategories"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:entries="@array/trolley_categories"
             app:ms_arrowColor="@color/primaryColor"
             app:ms_floatingLabelColor="@color/primaryColor"
-            app:ms_floatingLabelText="Select Trolley Category"
-            app:ms_hint="Select Trolley Category"
+            app:ms_floatingLabelText="Select Serial Number"
+            app:ms_hint="Select Serial Number"
             app:ms_arrowSize="16dp"
             app:ms_multiline="true" />
 
@@ -67,7 +66,7 @@
             android:textColor="@color/primaryColor"
             android:layout_gravity="center"
             android:padding="@dimen/STD_MARGIN"
-            android:text="Serial No. :"/>
+            android:text="Template name :"/>
 
         <TextView
             android:id="@+id/txtSerialNo"
@@ -77,16 +76,6 @@
             android:padding="@dimen/STD_MARGIN"
             android:text="123456"/>
 
-        <TextView
-            android:layout_marginLeft="4dp"
-            android:id="@+id/txtCatSerialNo"
-            android:layout_gravity="center"
-            android:gravity="left"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#494949"
-            android:textSize="@dimen/MM_TEXT_SIZE"
-            android:text="Template name"/>
 
         <EditText
             android:layout_marginLeft="4dp"
