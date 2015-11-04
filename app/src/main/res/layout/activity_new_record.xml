@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#494949"
-            android:textSize="@dimen/L_TEXT_SIZE"
+            android:textSize="@dimen/MM_TEXT_SIZE"
             android:text="Template name"/>
 
 

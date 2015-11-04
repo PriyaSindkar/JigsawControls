@@ -147,7 +147,7 @@ public class NewRecordActivity extends AppCompatActivity {
                 if (spCategories.getSelectedItem().toString().trim().equals("Select Serial Number")) {
                     Snackbar snack = Snackbar.make(spCategories, "Please Select Serial No!", Snackbar.LENGTH_SHORT);
                     snack.show();
-                }  else {
+                } else {
                     newOrder = new Order();
                     newOrder.setOrderDate(txtOrderDate.getText().toString().trim());
                     newOrder.setCategory(((TemplateModel) spCategories.getSelectedItem()).getTemplateName());
@@ -187,28 +187,6 @@ public class NewRecordActivity extends AppCompatActivity {
         serialNoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCatSerialNo.setAdapter(serialNoAdapter);*/
 
-        spCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (spCategories.getItemAtPosition(i) != null) {
-                    String templateId = ((TemplateModel) mAdapter.getItem(i)).getTemplateId();
-                    componentsForTemplateSelected = new ArrayList<Component>();
-                    for (int c = 0; c < equipment.size(); c++) {
-                        if (equipment.get(c).getCategoryId().equals(templateId)) {
-                            componentsForTemplateSelected.add(equipment.get(c));
-                        }
-                    }
-
-                    addImageLayout(componentsForTemplateSelected);
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
 
     }
@@ -450,7 +428,7 @@ public class NewRecordActivity extends AppCompatActivity {
     */
 
     private void setCategories() {
-        ArrayList<TemplateModel> templates = new ArrayList<>();
+        final ArrayList<TemplateModel> templates = new ArrayList<>();
         categories.clear();
         equipment = new ArrayList<>();
         for (int i = 0; i < categoriesList.size(); i++) {
@@ -470,8 +448,40 @@ public class NewRecordActivity extends AppCompatActivity {
         mAdapter = new CustomTemplateSpinnerAdapter(NewRecordActivity.this, templates, R.layout.spinner_dropdown, R.layout.spinner_layout);
         spCategories.setAdapter(mAdapter);
 
-
         Log.e("equipment", equipment.toString());
+
+        spCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+                if (i != -1) {
+                    txtCatSerialNo.setText("" + templates.get(i).getTemplateName());
+                } else {
+                    txtCatSerialNo.setText("Template name");
+                }
+
+
+                if (spCategories.getItemAtPosition(i) != null) {
+                    String templateId = ((TemplateModel) mAdapter.getItem(i)).getTemplateId();
+                    componentsForTemplateSelected = new ArrayList<Component>();
+                    for (int c = 0; c < equipment.size(); c++) {
+                        if (equipment.get(c).getCategoryId().equals(templateId)) {
+                            componentsForTemplateSelected.add(equipment.get(c));
+                        }
+                    }
+
+                    addImageLayout(componentsForTemplateSelected);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
     }
 
     private void saveForLaterPostCall() {

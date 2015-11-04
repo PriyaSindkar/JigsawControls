@@ -6,6 +6,7 @@
     <dimen name="VS_TEXT_SIZE">10dp</dimen>
     <dimen name="S_TEXT_SIZE">12dp</dimen>
     <dimen name="M_TEXT_SIZE">14dp</dimen>
+    <dimen name="MM_TEXT_SIZE">16dp</dimen>
     <dimen name="L_TEXT_SIZE">18dp</dimen>
     <dimen name="VL_TEXT_SIZE">28dp</dimen>
     <dimen name="STD_MARGIN">8dp</dimen>
