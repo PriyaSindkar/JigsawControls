@@ -31,6 +31,9 @@ public class OrderHistoryModel {
     @SerializedName("adminEmail")
     public String adminEmail;
 
+    @SerializedName("notes")
+    public String notes;
+
     public String getOrderId() {
         return orderId;
     }

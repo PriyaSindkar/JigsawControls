@@ -146,6 +146,10 @@ public class HistoryActivity extends ActionBarActivity {
             TextView txtOrderId = (TextView) inflatedLayout.findViewById(R.id.txtOrderId);
             txtOrderId.setText("Order Id: "+orderHistoryModels.get(i).orderId);
 
+            TextView txtNotes = (TextView) inflatedLayout.findViewById(R.id.txtNotes);
+            txtNotes.setText("Notes: "+orderHistoryModels.get(i).notes);
+
+
             TextView txtTrolleyCategory = (TextView) inflatedLayout.findViewById(R.id.txtTrolleyCategory);
             txtTrolleyCategory.setText("Category Name: "+orderHistoryModels.get(i).trolleyCategoryName);
             TextView txtSerialNo = (TextView) inflatedLayout.findViewById(R.id.txtSerialNo);

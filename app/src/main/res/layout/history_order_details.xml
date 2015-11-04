@@ -44,6 +44,16 @@
         android:layout_margin="@dimen/STD_MARGIN"
         android:textStyle="bold"
         android:textColor="@color/primaryColor" />
+
+    <TextView
+        android:layout_margin="@dimen/STD_MARGIN"
+        android:textStyle="bold"
+        android:id="@+id/txtNotes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notes"
+        android:textColor="@color/primaryColor" />
+
     <TextView
         android:layout_margin="@dimen/STD_MARGIN"
         android:textStyle="bold"

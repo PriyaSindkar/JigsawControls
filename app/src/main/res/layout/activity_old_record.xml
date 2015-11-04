@@ -47,6 +47,9 @@
             android:text="Order Date and time"/>
 
         <fr.ganfra.materialspinner.MaterialSpinner
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:id="@+id/spCategories"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

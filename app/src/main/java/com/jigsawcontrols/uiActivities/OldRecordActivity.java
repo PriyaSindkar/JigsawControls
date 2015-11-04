@@ -199,11 +199,15 @@ public class OldRecordActivity extends AppCompatActivity {
                 } else {
                     newOrder = new Order();
                     newOrder.setOrderDate(txtOrderDate.getText().toString().trim());
-                    newOrder.setCategory(((TemplateModel) spCategories.getSelectedItem()).getTemplateName());
-                    newOrder.setCatSerialNumber(txtSerialNo.getText().toString());
+                    newOrder.setCategory(txtSerialNo.getText().toString());
+                    newOrder.setCatSerialNumber(((TemplateModel) spCategories.getSelectedItem()).getSerialNumber());
+
+                    newOrder.setNotes(ednotes.getText().toString().trim());
                     newOrder.setComponents(getComponentsDetails());
 
                     submitOrderPostCAll(newOrder);
+
+
                 }
             }
         });
@@ -247,6 +251,7 @@ public class OldRecordActivity extends AppCompatActivity {
             noOfComponents = savedOrder.getComponents().size();
             spCategories.setSelection(getTemplateIndex(spCategories, savedOrder.getCategory()));
             txtSerialNo.setText(savedOrder.getCatSerialNumber());
+            ednotes.setText(savedOrder.getNotes());
             txtOrderDate.setText(savedOrder.getOrderDate());
             addImageLayout(savedOrder.getComponents());
         }
@@ -517,6 +522,8 @@ public class OldRecordActivity extends AppCompatActivity {
         }
         mAdapter = new CustomTemplateSpinnerAdapter(OldRecordActivity.this, templates,R.layout.spinner_dropdown, R.layout.spinner_layout );
         spCategories.setAdapter(mAdapter);
+
+
 
         Log.e("equipment", equipment.toString());
     }
