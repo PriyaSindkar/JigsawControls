@@ -131,6 +131,7 @@ public class NewRecordActivity extends AppCompatActivity {
                     newOrder.setOrderDate(txtOrderDate.getText().toString().trim());
                     newOrder.setCategory(((TemplateModel) spCategories.getSelectedItem()).getTemplateName());
                     newOrder.setCatSerialNumber(txtCatSerialNo.getText().toString().trim());
+                    newOrder.setNotes(ednotes.getText().toString().trim());
                     newOrder.setComponents(getComponentsDetails());
 
                     saveForLaterPostCall();
@@ -153,6 +154,7 @@ public class NewRecordActivity extends AppCompatActivity {
                     newOrder.setOrderDate(txtOrderDate.getText().toString().trim());
                     newOrder.setCategory(((TemplateModel) spCategories.getSelectedItem()).getTemplateName());
                     newOrder.setCatSerialNumber(txtCatSerialNo.getText().toString().trim());
+                    newOrder.setNotes(ednotes.getText().toString().trim());
                     newOrder.setComponents(getComponentsDetails());
 
 

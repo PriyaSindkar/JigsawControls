@@ -73,7 +73,7 @@ public class OldRecordActivity extends AppCompatActivity {
     ComplexPreferences complexPreferences;
     UserProfile profile;
     private boolean isFirstTime = true;
-
+    EditText ednotes;
     private String GET_TEMPLATES_URL = "http://jigsawserverpink.com/admin/getTemplate.php";
     private String POST_SUBMIT_ORDER_URL = "http://jigsawserverpink.com/admin/addOrder.php";
     private String POST_SUBMIT_ORDER_IMAGES_URL = "http://jigsawserverpink.com/admin/updateOrderImage.php";
@@ -119,6 +119,8 @@ public class OldRecordActivity extends AppCompatActivity {
     }
 
     private void init() {
+
+        ednotes = (EditText)findViewById(R.id.ednotes);
 
         txtOrderDate = (TextView) findViewById(R.id.txtOrderDate);
         txtSerialNo = (TextView) findViewById(R.id.txtSerialNo);

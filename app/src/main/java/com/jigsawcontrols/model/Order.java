@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class Order {
 
-    private String orderDate, category, catSerialNumber;
+    private String orderDate, category, catSerialNumber,notes;
     private ArrayList<Component> components;
 
     public ArrayList<Component> getComponents() {
@@ -29,6 +29,16 @@ public class Order {
     public String getCatSerialNumber() {
         return catSerialNumber;
     }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+
 
     public void setCatSerialNumber(String catSerialNumber) {
         this.catSerialNumber = catSerialNumber;
