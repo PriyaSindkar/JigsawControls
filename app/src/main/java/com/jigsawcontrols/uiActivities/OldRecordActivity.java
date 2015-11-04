@@ -394,6 +394,7 @@ public class OldRecordActivity extends AppCompatActivity {
         }
 
         pairs.add(new BasicNameValuePair("equipment_details", equipmentDetails.toString()));
+        pairs.add(new BasicNameValuePair("notes", order.getNotes()));
         pairs.add(new BasicNameValuePair("adminName", profile.data.get(0).adminfname));
         pairs.add(new BasicNameValuePair("adminEmail", profile.data.get(0).adminemail));
         pairs.add(new BasicNameValuePair("serial_no", order.getCatSerialNumber()));
