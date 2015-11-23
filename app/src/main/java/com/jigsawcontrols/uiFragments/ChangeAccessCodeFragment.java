@@ -27,7 +27,7 @@ import org.json.JSONObject;
 public class ChangeAccessCodeFragment extends Fragment {
 
     private Button btnLogin;
-    private GridPasswordView pswView;
+    private EditText pswView;
 
     public static ChangeAccessCodeFragment newInstance() {
         ChangeAccessCodeFragment f = new ChangeAccessCodeFragment();
@@ -51,20 +51,20 @@ public class ChangeAccessCodeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_change_access_code, container, false);
         btnLogin = (Button) view.findViewById(R.id.btnLogin);
-        pswView = (GridPasswordView) view.findViewById(R.id.pswView);
+        pswView = (EditText) view.findViewById(R.id.pswView);
 
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if(pswView.getPassWord().length() == 0) {
+                if(pswView.getText().toString().trim().length() == 0) {
                     Snackbar.make(btnLogin, "Please enter new access code", Snackbar.LENGTH_LONG).show();
-                } else if(pswView.getPassWord().length() != 6) {
+                } else if(pswView.getText().toString().trim().length() != 6) {
                     Snackbar.make(btnLogin, "Access Code must be 6 digits.", Snackbar.LENGTH_LONG).show();
                 } else {
                     SharedPreferences preferences = getActivity().getSharedPreferences("login", getActivity().MODE_PRIVATE);
-                    preferences.edit().putString("quick_access_code", pswView.getPassWord()).commit();
+                    preferences.edit().putString("quick_access_code", pswView.getText().toString().trim()).commit();
 
                     Snackbar.make(view, "Access Code changed successfully.", Snackbar.LENGTH_LONG).show();
 

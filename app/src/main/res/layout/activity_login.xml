@@ -66,6 +66,17 @@
             android:text="Login"
             style="@style/my_buttons"/>
 
+        <TextView
+            android:id="@+id/txtBack"
+            android:textSize="14dp"
+            android:textColor="#FF69B4"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="Back to Qucik login page"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
 </RelativeLayout>

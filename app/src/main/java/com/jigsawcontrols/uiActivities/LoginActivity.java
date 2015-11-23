@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -39,12 +40,21 @@ import java.util.List;
 public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
     private EditText edtUsername, edtPassword;
+    TextView txtBack;
     private final String LOGIN_URL = "http://jigsawserverpink.com/admin/getLogin.php";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        txtBack = (TextView)findViewById(R.id.txtBack);
+        txtBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,QuickAccessActivity.class));
+                finish();
+            }
+        });
         btnLogin = (Button) findViewById(R.id.btnLogin);
         edtUsername = (EditText) findViewById(R.id.edtUsername);
         edtPassword = (EditText) findViewById(R.id.edtPassword);

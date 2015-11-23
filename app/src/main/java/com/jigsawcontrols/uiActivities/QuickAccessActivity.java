@@ -21,7 +21,7 @@ import org.w3c.dom.Text;
 
 public class QuickAccessActivity extends AppCompatActivity {
     private Button btnLogin;
-    private GridPasswordView pswView;
+    private EditText pswView;
     private TextView txtForgotAccessCode, txtAccessCodeChanged,txtBottomCode;
 
 
@@ -31,7 +31,7 @@ public class QuickAccessActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quick_acess);
 
         btnLogin = (Button) findViewById(R.id.btnLogin);
-        pswView = (GridPasswordView) findViewById(R.id.pswView);
+        pswView = (EditText) findViewById(R.id.pswView);
         txtForgotAccessCode = (TextView) findViewById(R.id.txtForgotAccessCode);
         txtAccessCodeChanged = (TextView) findViewById(R.id.txtAccessCodeChanged);
         txtBottomCode= (TextView) findViewById(R.id.txtBottomCode);
@@ -50,13 +50,13 @@ public class QuickAccessActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (pswView.getPassWord().length() != 6) {
+                if (pswView.getText().toString().length() != 6) {
                     Snackbar.make(view, "Access Code must be 6 digits.", Snackbar.LENGTH_LONG).show();
                 } else {
 
                     SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
                     if (getIntent().getBooleanExtra("is_access_code_default", false)) {
-                        if ("123456".equals(pswView.getPassWord())) {
+                        if ("123456".equals(pswView.getText().toString().trim())) {
                             if (preferences.contains("isUserLogin")) {
                                 Intent intent = new Intent(getBaseContext(), MyDrawerActivity.class);
                                 startActivity(intent);
@@ -71,7 +71,7 @@ public class QuickAccessActivity extends AppCompatActivity {
                             Snackbar.make(view, "Please enter valid access code.", Snackbar.LENGTH_LONG).show();
                         }
                     } else {
-                        if (preferences.getString("quick_access_code", "").equals(pswView.getPassWord())) {
+                        if (preferences.getString("quick_access_code", "").equals(pswView.getText().toString().trim())) {
                             if (preferences.contains("isUserLogin")) {
                                 Intent intent = new Intent(getBaseContext(), MyDrawerActivity.class);
                                 startActivity(intent);

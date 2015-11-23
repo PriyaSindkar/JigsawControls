@@ -53,7 +53,8 @@
 
 
         <com.jungly.gridpasswordview.GridPasswordView
-            android:id="@+id/pswView"
+            android:visibility="gone"
+            android:id="@+id/pswView1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/HEADER_SIZE"
             android:layout_margin="@dimen/L_TEXT_SIZE"
@@ -65,6 +66,15 @@
             app:passwordLength="6"
             app:passwordTransformation="."
             app:passwordType="numberPassword"/>
+
+        <EditText
+            android:gravity="center"
+            android:id="@+id/pswView"
+            android:inputType="numberPassword"
+            android:maxLength="6"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
 
             <Button
