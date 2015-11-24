@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.jigsawcontrols.R;
+import com.jigsawcontrols.helpers.PrefUtils;
 import com.jigsawcontrols.uiActivities.HistoryActivity;
 import com.jigsawcontrols.uiActivities.LoginActivity;
 import com.jigsawcontrols.uiActivities.NewRecordActivity;
@@ -32,6 +34,26 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /*@Override
+    public void onStart() {
+        super.onStart();
+        PrefUtils.saveTime(getActivity(), PrefUtils.getCurrentDateTime());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Toast.makeText(getActivity(), "Less than 1 hour", Toast.LENGTH_SHORT);
+        if(PrefUtils.isTimeMoreThan1Hour(PrefUtils.getCurrentDateTime(),PrefUtils.returnTime((getActivity())))){
+            Toast.makeText(getActivity(), "More than 1 hour", Toast.LENGTH_SHORT);
+        }else{
+            Toast.makeText(getActivity(),"Less than 1 hour",Toast.LENGTH_SHORT);
+        }
+
+
+    }
+
+*/
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -31,6 +31,7 @@ import com.jigsawcontrols.apiHelpers.EnumType;
 import com.jigsawcontrols.apiHelpers.GetPostClass;
 import com.jigsawcontrols.apiHelpers.MyApplication;
 import com.jigsawcontrols.helpers.ComplexPreferences;
+import com.jigsawcontrols.helpers.PrefUtils;
 import com.jigsawcontrols.model.CategoryEquipmentModel;
 import com.jigsawcontrols.model.OrderHistoryModel;
 import com.jigsawcontrols.model.UserProfile;
@@ -59,6 +60,7 @@ public class HistoryActivity extends ActionBarActivity {
        // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
 
+        PrefUtils.saveTime(HistoryActivity.this, PrefUtils.getCurrentDateTime());
 
         setContentView(R.layout.activity_history);
 
@@ -77,7 +79,22 @@ public class HistoryActivity extends ActionBarActivity {
 
         getHistory();
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        if(PrefUtils.isTimeMoreThan1Hour(PrefUtils.getCurrentDateTime(),PrefUtils.returnTime(HistoryActivity.this))){
+            //Toast.makeText(MyDrawerActivity.this,"More than 1 hour",Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(HistoryActivity.this,QuickAccessActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            finish();
+        }else{
+            // Toast.makeText(MyDrawerActivity.this,"Less than 1 hour",Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
 
     private void getHistory() {
 
