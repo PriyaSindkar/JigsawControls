@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.jigsawcontrols.R;
 import com.jigsawcontrols.helpers.PrefUtils;
+import com.jigsawcontrols.uiActivities.EditOrder;
 import com.jigsawcontrols.uiActivities.HistoryActivity;
 import com.jigsawcontrols.uiActivities.LoginActivity;
 import com.jigsawcontrols.uiActivities.NewRecordActivity;
@@ -105,6 +106,15 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), HistoryActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+        linearEditRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), EditOrder.class);
                 startActivity(intent);
             }
         });
