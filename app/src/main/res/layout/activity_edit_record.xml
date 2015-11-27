@@ -38,7 +38,6 @@
         android:orientation="vertical">
 
         <EditText
-            android:text="20151102025909_1"
             android:hint="Enter serial number"
             android:id="@+id/edSerialNo"
             android:layout_width="match_parent"
