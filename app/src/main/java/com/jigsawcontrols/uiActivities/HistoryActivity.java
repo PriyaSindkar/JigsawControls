@@ -53,19 +53,6 @@ public class HistoryActivity extends ActionBarActivity {
     private ArrayList<OrderHistoryModel> orderHistoryModels;
 
 
-    // pass serial no only
-    // key : "sno"
-    private final String GET_ORDER_SERIAL = "http://jigsawserverpink.com/admin/getHistoryBySerial.php";
-
-
-
-    // to edit order
-    // key : "sno"
-    // "o_date"
-    // "equipment_details"
-    // "notes"
-    private final String EDIT_ORDER_SERIAL = "http://jigsawserverpink.com/admin/editOrder.php";
-
 
 
     @Override
@@ -118,6 +105,9 @@ public class HistoryActivity extends ActionBarActivity {
 
         List<NameValuePair> pairs = new ArrayList<>();
         pairs.add(new BasicNameValuePair("email", profile.data.get(0).adminemail));
+
+
+        Log.e("email",""+profile.data.get(0).adminemail);
 
         final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
         circleDialog.setCancelable(true);
