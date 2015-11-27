@@ -22,7 +22,7 @@ import com.jigsawcontrols.uiActivities.QuickAccessActivity;
 
 public class HomeFragment extends Fragment {
 
-    LinearLayout linearNewRecord, linearOldRecord, linearHistory, btnLogout;
+    LinearLayout linearNewRecord,linearEditRecord, linearOldRecord, linearHistory, btnLogout;
 
     public static HomeFragment newInstance() {
         HomeFragment f = new HomeFragment();
@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment {
         linearNewRecord = (LinearLayout) view.findViewById(R.id.linearNewRecord);
         linearOldRecord = (LinearLayout) view.findViewById(R.id.linearOldRecord);
         linearHistory = (LinearLayout) view.findViewById(R.id.linearHistory);
-
+        linearEditRecord  = (LinearLayout) view.findViewById(R.id.linearEditRecord);
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
