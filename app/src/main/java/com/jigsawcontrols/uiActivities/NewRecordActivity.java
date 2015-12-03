@@ -459,19 +459,20 @@ public class NewRecordActivity extends AppCompatActivity {
         final ArrayList<TemplateModel> templates = new ArrayList<>();
         categories.clear();
         equipment = new ArrayList<>();
+
         for (int i = 0; i < categoriesList.size(); i++) {
             ArrayList<CategoryEquipmentModel2> list = (ArrayList<CategoryEquipmentModel2>) categoriesList.get(i);
             TemplateModel template = new TemplateModel(list.get(0).template_id, list.get(0).template_name,list.get(0).number);
             templates.add(template);
 
-            categories.add(list.get(0).template_name);
+           /* categories.add(list.get(0).template_name);
             for (int j = 0; j < list.size(); j++) {
                 Component component = new Component();
                 component.setCategoryId(list.get(j).template_id);
                 component.setComponentName(list.get(j).equipment_name);
                 component.setComponentDetails("");
                 equipment.add(component);
-            }
+            }*/
         }
         mAdapter = new CustomTemplateSpinnerAdapter(NewRecordActivity.this, templates, R.layout.spinner_dropdown, R.layout.spinner_layout);
         spCategories.setAdapter(mAdapter);
@@ -493,7 +494,27 @@ public class NewRecordActivity extends AppCompatActivity {
                 if (spCategories.getItemAtPosition(i) != null) {
                     String templateId = ((TemplateModel) mAdapter.getItem(i)).getTemplateId();
 
-                    Log.e("SNO", ((TemplateModel) mAdapter.getItem(i)).getSerialNumber());
+                    String SNO = ((TemplateModel) mAdapter.getItem(i)).getSerialNumber();
+
+                    for (int ii = 0; ii < categoriesList.size(); ii++) {
+                        ArrayList<CategoryEquipmentModel2> list = (ArrayList<CategoryEquipmentModel2>) categoriesList.get(ii);
+                        TemplateModel template = new TemplateModel(list.get(0).template_id, list.get(0).template_name, list.get(0).number);
+                        //templates.add(template);
+
+                        for (int j = 0; j < list.size(); j++) {
+
+                            if(SNO.equalsIgnoreCase(list.get(j))) {
+
+                                Component component = new Component();
+                                component.setCategoryId(list.get(j).template_id);
+                                component.setComponentName(list.get(j).equipment_name);
+                                component.setComponentDetails("");
+                                equipment.add(component);
+                            }
+                        }
+
+                    }
+
 
                     componentsForTemplateSelected = new ArrayList<Component>();
                     for (int c = 0; c < equipment.size(); c++) {
