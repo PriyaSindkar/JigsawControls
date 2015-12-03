@@ -465,6 +465,8 @@ public class NewRecordActivity extends AppCompatActivity {
             TemplateModel template = new TemplateModel(list.get(0).template_id, list.get(0).template_name,list.get(0).number);
             templates.add(template);
 
+
+
            /* categories.add(list.get(0).template_name);
             for (int j = 0; j < list.size(); j++) {
                 Component component = new Component();
@@ -498,21 +500,20 @@ public class NewRecordActivity extends AppCompatActivity {
 
                     for (int ii = 0; ii < categoriesList.size(); ii++) {
                         ArrayList<CategoryEquipmentModel2> list = (ArrayList<CategoryEquipmentModel2>) categoriesList.get(ii);
-                        TemplateModel template = new TemplateModel(list.get(0).template_id, list.get(0).template_name, list.get(0).number);
-                        //templates.add(template);
+                        TemplateModel template = new TemplateModel(list.get(0).template_id, list.get(0).template_name,list.get(0).number);
+                        templates.add(template);
 
-                        for (int j = 0; j < list.size(); j++) {
+                     categories.add(list.get(0).template_name);
+                    for (int j = 0; j < list.size(); j++) {
 
-                            if(SNO.equalsIgnoreCase(list.get(j))) {
-
-                                Component component = new Component();
-                                component.setCategoryId(list.get(j).template_id);
-                                component.setComponentName(list.get(j).equipment_name);
-                                component.setComponentDetails("");
-                                equipment.add(component);
-                            }
-                        }
-
+                       if(SNO.equalsIgnoreCase(list.get(j).number)) {
+                           Component component = new Component();
+                           component.setCategoryId(list.get(j).template_id);
+                           component.setComponentName(list.get(j).equipment_name);
+                           component.setComponentDetails("");
+                           equipment.add(component);
+                       }
+                    }
                     }
 
 
