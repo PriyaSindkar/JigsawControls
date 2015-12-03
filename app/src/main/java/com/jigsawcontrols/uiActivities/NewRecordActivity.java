@@ -387,6 +387,9 @@ public class NewRecordActivity extends AppCompatActivity {
 
                             categoryEquipmentModels = new GsonBuilder().create().fromJson(infoJSONObj.optString(key).toString(), listType);
                             Log.e("categoryEquipmentModels", categoryEquipmentModels.toString());
+
+
+
                             categoriesList.add(categoryEquipmentModels);
 
                         }
