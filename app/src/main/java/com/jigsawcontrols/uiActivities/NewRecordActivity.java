@@ -492,6 +492,9 @@ public class NewRecordActivity extends AppCompatActivity {
 
                 if (spCategories.getItemAtPosition(i) != null) {
                     String templateId = ((TemplateModel) mAdapter.getItem(i)).getTemplateId();
+
+                    Log.e("SNO", ((TemplateModel) mAdapter.getItem(i)).getSerialNumber());
+
                     componentsForTemplateSelected = new ArrayList<Component>();
                     for (int c = 0; c < equipment.size(); c++) {
                         if (equipment.get(c).getCategoryId().equals(templateId)) {
