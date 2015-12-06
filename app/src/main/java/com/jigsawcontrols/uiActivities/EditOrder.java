@@ -130,7 +130,7 @@ public class EditOrder extends Activity {
 
                 }
 
-                if(isAllValidate){
+               // if(isAllValidate){
 
                     /*if(ednotes.getText().toString().trim().length()==0){
                         Snackbar.make(findViewById(android.R.id.content), "Please add some notes also.", Snackbar.LENGTH_LONG).show();
@@ -138,9 +138,9 @@ public class EditOrder extends Activity {
                         sendData(equipmentDetails.toString(),ednotes.getText().toString().trim());
                     //}
 
-                }else {
-                    Snackbar.make(findViewById(android.R.id.content), "Please fill all equipment details.", Snackbar.LENGTH_LONG).show();
-                }
+               // }else {
+                 //   Snackbar.make(findViewById(android.R.id.content), "Please fill all equipment details.", Snackbar.LENGTH_LONG).show();
+               // }
 
 
 
