@@ -106,13 +106,13 @@ public class NewRecordActivity extends AppCompatActivity {
             }
         });
 
-        txtSubmit.setOnClickListener(new View.OnClickListener() {
+      /*  txtSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Order Placed!", Snackbar.LENGTH_LONG).show();
             }
         });
-
+*/
         Calendar c = Calendar.getInstance();
 
         SimpleDateFormat df = new SimpleDateFormat("dd/MMM/yyyy HH:mm");
