@@ -102,12 +102,13 @@ public class HistoryActivity extends ActionBarActivity {
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(HistoryActivity.this, "user_pref", 0);
         UserProfile profile = complexPreferences.getObject("current-user", UserProfile.class);
 
+        Log.e("email",""+profile.data.get(0).adminemail);
 
         List<NameValuePair> pairs = new ArrayList<>();
         pairs.add(new BasicNameValuePair("email", profile.data.get(0).adminemail));
 
 
-        Log.e("email",""+profile.data.get(0).adminemail);
+
 
         final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
         circleDialog.setCancelable(true);

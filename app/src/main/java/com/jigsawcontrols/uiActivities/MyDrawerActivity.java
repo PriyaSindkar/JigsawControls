@@ -20,7 +20,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.jigsawcontrols.R;
+import com.jigsawcontrols.helpers.ComplexPreferences;
 import com.jigsawcontrols.helpers.PrefUtils;
+import com.jigsawcontrols.model.UserProfile;
 import com.jigsawcontrols.uiFragments.ChangeAccessCodeFragment;
 import com.jigsawcontrols.uiFragments.ChangePasswordFragment;
 import com.jigsawcontrols.uiFragments.HomeFragment;
@@ -41,6 +43,13 @@ public class MyDrawerActivity extends ActionBarActivity implements NavigationVie
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(MyDrawerActivity.this, "user_pref", 0);
+        UserProfile prof = complexPreferences.getObject("current-user", UserProfile.class);
+
+        toolbar.setSubtitle("Welcome, "+prof.data.get(0).adminfname);
+
+
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);

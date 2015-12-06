@@ -456,6 +456,8 @@ public class NewRecordActivity extends AppCompatActivity {
     */
 
     private void setCategories() {
+
+
         final ArrayList<TemplateModel> templates = new ArrayList<>();
         categories.clear();
         equipment = new ArrayList<>();
@@ -476,6 +478,7 @@ public class NewRecordActivity extends AppCompatActivity {
                 equipment.add(component);
             }*/
         }
+
         mAdapter = new CustomTemplateSpinnerAdapter(NewRecordActivity.this, templates, R.layout.spinner_dropdown, R.layout.spinner_layout);
         spCategories.setAdapter(mAdapter);
 
@@ -497,6 +500,11 @@ public class NewRecordActivity extends AppCompatActivity {
                     String templateId = ((TemplateModel) mAdapter.getItem(i)).getTemplateId();
 
                     String SNO = ((TemplateModel) mAdapter.getItem(i)).getSerialNumber();
+
+
+                    final ArrayList<TemplateModel> templates = new ArrayList<>();
+                    categories.clear();
+                    equipment = new ArrayList<>();
 
                     for (int ii = 0; ii < categoriesList.size(); ii++) {
                         ArrayList<CategoryEquipmentModel2> list = (ArrayList<CategoryEquipmentModel2>) categoriesList.get(ii);
