@@ -120,13 +120,10 @@ public class EditOrder extends Activity {
                     EditText edItem = (EditText) inflatedLayout.findViewById(R.id.edItem);
                     TextView txtTitle = (TextView) inflatedLayout.findViewById(R.id.txtTitle);
 
-                    if(edItem.getText().toString().trim().length()==0){
-                        isAllValidate = false;
 
-                    }else{
                         equipmentDetails.append(txtTitle.getText().toString() + " \n " +
                                 "Equipment serial no.: " + edItem.getText().toString().trim() + " \n ,");
-                    }
+
 
                 }
 
@@ -253,7 +250,7 @@ public class EditOrder extends Activity {
                         Snackbar.make(findViewById(android.R.id.content), "Invalid Serial number.", Snackbar.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
-                    Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch Data.", Snackbar.LENGTH_LONG).show();
+                   // Snackbar.make(findViewById(android.R.id.content), "Cannot Fetch Data.", Snackbar.LENGTH_LONG).show();
                     Log.e("EXCEPTION", e.toString());
                 }
             }
