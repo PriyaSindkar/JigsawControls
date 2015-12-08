@@ -108,8 +108,6 @@ public class HistoryActivity extends ActionBarActivity {
         pairs.add(new BasicNameValuePair("email", profile.data.get(0).adminemail));
 
 
-
-
         final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
         circleDialog.setCancelable(true);
         circleDialog.show();
