@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/JigsawControls.iml" filepath="$PROJECT_DIR$/JigsawControls.iml" />
       <module fileurl="file://$PROJECT_DIR$/JigsawControls-V2.iml" filepath="$PROJECT_DIR$/JigsawControls-V2.iml" />
       <module fileurl="file://$PROJECT_DIR$/JigsawControls-V3.iml" filepath="$PROJECT_DIR$/JigsawControls-V3.iml" />
-      <module fileurl="file://$PROJECT_DIR$/JigsawControls-V4.iml" filepath="$PROJECT_DIR$/JigsawControls-V4.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

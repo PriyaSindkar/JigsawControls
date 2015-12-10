@@ -605,6 +605,8 @@ public class NewRecordActivity extends AppCompatActivity {
         StringBuilder equipmentDetails = new StringBuilder();
         final ArrayList<Component> components = order.getComponents();
 
+
+
         for (int i = 0; i < components.size(); i++) {
             Component component = components.get(i);
             equipmentDetails.append("Equipment name: " + component.getComponentName() + " \n " +
@@ -616,6 +618,8 @@ public class NewRecordActivity extends AppCompatActivity {
         pairs.add(new BasicNameValuePair("adminName", profile.data.get(0).adminfname));
         pairs.add(new BasicNameValuePair("adminEmail", profile.data.get(0).adminemail));
         pairs.add(new BasicNameValuePair("serial_no", order.getCatSerialNumber()));
+
+        Log.e("##comp da", "" +equipmentDetails.toString());
 
         new GetPostClass(POST_SUBMIT_ORDER_URL, pairs, EnumType.POST) {
 
@@ -667,17 +671,17 @@ public class NewRecordActivity extends AppCompatActivity {
 
 
 
-
+/*
             final ProgressDialog circleDialog = ProgressDialog.show(this, "Please wait", "Loading...", true);
             circleDialog.setCancelable(true);
             circleDialog.show();
-
+*/
 
         new GetPostClass(POST_SUBMIT_ORDER_IMAGES_URL,pairs,EnumType.POST){
 
             @Override
             public void response(String msg) {
-                circleDialog.dismiss();
+              //  circleDialog.dismiss();
 
                 String response1 = msg.toString();
                 Log.e("Resp ORDER_IMAGES: ", "" + response1);
@@ -703,7 +707,7 @@ public class NewRecordActivity extends AppCompatActivity {
             public void error(String error) {
                 Snackbar.make(txtSave, "Order Submission Failed.", Snackbar.LENGTH_LONG).show();
                 Log.e("VOLLEY EXCEPTION", error.toString());
-                circleDialog.dismiss();
+              //  circleDialog.dismiss();
             }
         }.call();
     }
